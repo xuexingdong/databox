@@ -38,3 +38,4 @@ class PetItem(scrapy.Item):
     self_status = Field()
     # 宠物属性
     attributes = Field()
+

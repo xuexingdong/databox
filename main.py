@@ -1,20 +1,12 @@
-import pickle
-
-from redis import Redis
-from scrapy import cmdline
 from scrapy.crawler import CrawlerProcess
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from scrapy.utils.project import get_project_settings
 
-engine = create_engine(
-    'mysql+pymysql://root:123456@localhost/databox?charset=utf8', echo=False)  # 创建DBSession类型
-DBSession = sessionmaker(bind=engine)
-
-
-def get_mysql_session():
-    session = DBSession()
-    return session
-
+from databox.tmall.tmall_item_spider import TmallItemSpider
+from databox.tmall.tmall_rate_spider import TmallRateSpider
 
 if __name__ == '__main__':
-    cmdline.execute('scrapy crawl petchain'.split())
+    process = CrawlerProcess(get_project_settings())
+    # process.crawl(PetChainSpider)
+    process.crawl(TmallItemSpider)
+    process.crawl(TmallRateSpider)
+    process.start()
