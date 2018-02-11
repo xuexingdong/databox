@@ -1,5 +1,6 @@
 import json
 import pickle
+from urllib.parse import urlencode
 
 from scrapy.http import Response
 from scrapy_redis.spiders import RedisSpider
@@ -16,6 +17,9 @@ class TmallRateSpider(RedisSpider):
         'ITEM_PIPELINES': {
             'databox.tmall.pipelines.TmallRatePipeline': 300,
         },
+        'DOWNLOADER_MIDDLEWARES': {
+            'databox.tmall.middlewares.CookiesMiddleware': 400
+        },
         'CONCURRENT_REQUESTS': 64,
         'RETRY_TIMES': 10
     }
@@ -30,8 +34,9 @@ class TmallRateSpider(RedisSpider):
         paginator = res['paginator']
         # 还未到最后一页
         if current_page < paginator['lastPage']:
-            response.meta['page'] = current_page + 1
             next_request = response.request
+            next_request.meta['query']['currentPage'] = current_page + 1
+            next_request.url = next_request.meta['url'] + urlencode(next_request.meta['query'])
             # 商品详情
             yield next_request
         for rate in res['rateList']:
