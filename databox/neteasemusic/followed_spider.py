@@ -5,6 +5,7 @@ from scrapy_redis.spiders import RedisSpider
 from scrapy_redis.utils import bytes_to_str
 
 from databox.neteasemusic import apis, utils
+from databox.neteasemusic.items import FollowItem
 
 
 class NeteaseMusicFollowedSpider(RedisSpider):
@@ -13,6 +14,12 @@ class NeteaseMusicFollowedSpider(RedisSpider):
     """
     name = 'netease_music_followed'
     redis_key = "databox:" + name
+
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'databox.neteasemusic.pipelines.FollowPipeline': 300,
+        },
+    }
 
     def make_request_from_data(self, data):
         res = json.loads(bytes_to_str(data, self.redis_encoding))
@@ -29,7 +36,7 @@ class NeteaseMusicFollowedSpider(RedisSpider):
         if res['more']:
             data = {
                 'userId': response.meta['userId'],
-                'total':  False,
+                'total':  'false',
                 'limit':  response.meta['limit'],
                 'offset': response.meta['offset'] + 100,
             }
@@ -37,5 +44,12 @@ class NeteaseMusicFollowedSpider(RedisSpider):
                 'meta': data,
                 'data': utils.encrypted_request(data)
             })
+        followed_ids = [followed['userId'] for followed in res['followeds']]
+        for followed_id in followed_ids:
+            item = FollowItem()
+            item['id1'] = followed_id
+            item['id2'] = response.meta['userId']
+            yield item
+
         self.server.rpush('databox:netease_music_user',
-                          *[followed['userId'] for followed in res['followeds']])
+                          *followed_ids)

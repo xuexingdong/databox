@@ -6,6 +6,7 @@ from scrapy_redis.spiders import RedisSpider
 from scrapy_redis.utils import bytes_to_str
 
 from databox.neteasemusic import utils, apis
+from databox.neteasemusic.items import UserItem
 
 
 class NeteaseMusicUserSpider(RedisSpider):
@@ -29,7 +30,7 @@ class NeteaseMusicUserSpider(RedisSpider):
         return Request(url=apis.get_user_url(id), meta={'id': id})
 
     def parse(self, response: HtmlResponse):
-        item = {}
+        item = UserItem()
         item['id'] = response.meta['id']
         item['nickname'] = response.css('::text').re_first('nickname:"(.*?)"')
         item['event_count'] = int(response.css('#event_count::text').extract_first(default=0))
@@ -38,12 +39,11 @@ class NeteaseMusicUserSpider(RedisSpider):
         head_box = response.css('#head-box')[0]
         item['description'] = head_box.re_first('<div class="inf s-fc3 f-brk">个人介绍：(.*?)</div>')
         item['address'] = head_box.re_first('<span>所在地区：(.*?)</span>')
-        yield item
         # 关注列表信息
         if item['follow_count'] > 0:
             data = {
                 'userId':     response.meta['id'],
-                'total':      True,
+                'total':      'true',
                 'limit':      100,
                 'offset':     0,
                 'csrf_token': ''
@@ -58,7 +58,7 @@ class NeteaseMusicUserSpider(RedisSpider):
         if item['fan_count'] > 0:
             data = {
                 'userId':     response.meta['id'],
-                'total':      True,
+                'total':      'true',
                 'limit':      100,
                 'offset':     0,
                 'csrf_token': ''
@@ -68,3 +68,4 @@ class NeteaseMusicUserSpider(RedisSpider):
                                   'meta': data,
                                   'data': utils.encrypted_request(data)
                               }))
+        # yield item
