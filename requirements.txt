@@ -1,0 +1,5 @@
+redis
+scrapy
+pycryptodome
+requests
+PyExecJS
