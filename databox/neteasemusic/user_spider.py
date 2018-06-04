@@ -68,4 +68,4 @@ class NeteaseMusicUserSpider(RedisSpider):
                                   'meta': data,
                                   'data': utils.encrypted_request(data)
                               }))
-        # yield item
+        yield item

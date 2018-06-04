@@ -4,7 +4,6 @@ from urllib.parse import urlencode
 
 from scrapy.http import Response
 from scrapy_redis.spiders import RedisSpider
-from scrapy_redis.utils import bytes_to_str
 
 from databox.tmall.item_loaders import TmallRateLoader
 from databox.tmall.items import TmallRateItem
@@ -14,14 +13,14 @@ class TmallRateSpider(RedisSpider):
     name = 'tmall_rate'
 
     custom_settings = {
-        'ITEM_PIPELINES': {
+        'ITEM_PIPELINES':         {
             'databox.tmall.pipelines.TmallRatePipeline': 300,
         },
         'DOWNLOADER_MIDDLEWARES': {
-            'databox.tmall.middlewares.CookiesMiddleware': 400
+            'databox.tmall.middlewares.TmallCookiesMiddleware': 400
         },
-        'CONCURRENT_REQUESTS': 64,
-        'RETRY_TIMES': 10
+        'CONCURRENT_REQUESTS':    64,
+        'RETRY_TIMES':            10
     }
 
     def make_request_from_data(self, data):

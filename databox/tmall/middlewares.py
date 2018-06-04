@@ -1,10 +1,10 @@
 import json
 
 
-class CookiesMiddleware:
+class TmallCookiesMiddleware:
     def process_request(self, request, spider):
         # 带上cookie
-        cookie = spider.server.lindex('cookies_pool:' + spider.name, 0)
+        cookie = spider.server.get('databox:cookies:tmall')
         if cookie:
             request.cookies = json.loads(cookie)
 

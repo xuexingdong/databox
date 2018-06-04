@@ -3,3 +3,5 @@ scrapy
 pycryptodome
 requests
 PyExecJS
+qrcode
+selenium
