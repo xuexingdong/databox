@@ -40,6 +40,6 @@ class TmallRateSpider(RedisSpider):
             yield next_request
         for rate in res['rateList']:
             l = TmallRateLoader(item=TmallRateItem())
-            l.add_value('create_time', rate['rateDate'])
+            l.add_value('created_at', rate['rateDate'])
             l.add_value('content', rate['rateContent'])
             yield l.load_item()

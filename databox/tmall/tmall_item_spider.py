@@ -3,10 +3,8 @@ import pickle
 from datetime import datetime
 from urllib.parse import urlencode
 
-import qrcode
 from scrapy import Request
 from scrapy.http import Response
-from scrapy.loader import ItemLoader
 from scrapy_redis.spiders import RedisSpider
 
 from databox.tmall.item_loaders import TmallItemLoader, TmallSkuLoader
@@ -20,7 +18,8 @@ class TmallItemSpider(RedisSpider):
 
     custom_settings = {
         'ITEM_PIPELINES':         {
-            'databox.tmall.pipelines.TmallItemPipeline': 300,
+            'databox.tmall.pipelines.TmallItemPipeline':    300,
+            'databox.tmall.pipelines.TmallSkuItemPipeline': 400,
         },
         'DOWNLOADER_MIDDLEWARES': {
             'databox.tmall.middlewares.TmallCookiesMiddleware': 543
@@ -35,8 +34,8 @@ class TmallItemSpider(RedisSpider):
         headers = {
             'Referer': 'https://mdskip.taobao.com/core/initItemDetail.htm?itemId=' + item_id
         }
-        # item_url = 'https://detail.tmall.com/item.htm?id=' + item_id
-        item_url = 'https://member1.taobao.com/member/fresh/account_security.htm'
+        item_url = 'https://detail.tmall.com/item.htm?id=' + item_id
+        # item_url = 'https://member1.taobao.com/member/fresh/account_security.htm'
         return [Request(item_url, headers=headers, meta={'item_id': item_id}, dont_filter=True)]
 
     def parse(self, response: Response):
@@ -96,6 +95,7 @@ class TmallItemSpider(RedisSpider):
                 sku_loader.add_value('id', int(sku_id))
                 sku_loader.add_value('item_id', int(response.meta['item_id']))
                 sku_loader.add_value('price', float(price_info['price']))
+                sku_loader.add_value('created_at', datetime.now())
                 if 'promotionList' in price_info:
                     promotion_list = price_info['promotionList']
                     sku_loader.add_value('promotion_price', float(promotion_list[0]['price']))

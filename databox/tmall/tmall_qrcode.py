@@ -1,15 +1,18 @@
 import json
 import logging
+import pathlib
 import sys
 import time
 
 import qrcode
 import requests
 from scrapy.commands import ScrapyCommand
+from scrapy.exceptions import UsageError
 from scrapy_redis import connection
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome import webdriver
 import selenium.webdriver.support.expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -21,6 +24,7 @@ class Command(ScrapyCommand):
         super().__init__()
         self.lg_token = ''
         self.cookies = None
+        self.driver_path = ''
 
     requires_project = False
     default_settings = {
@@ -28,6 +32,13 @@ class Command(ScrapyCommand):
     }
 
     def run(self, args, opts):
+        if len(args) != 1:
+            raise UsageError()
+        self.driver_path = args[0]
+        path = pathlib.Path(self.driver_path)
+        if not path.is_file():
+            print('driver not found')
+            sys.exit(-1)
         status = None
         while status != TmallQrCodeScanStatus.CONFIRM:
             res = requests.get('https://qrlogin.taobao.com/qrcodelogin/generateQRCode4Login.do').json()
@@ -45,7 +56,8 @@ class Command(ScrapyCommand):
             while status != TmallQrCodeScanStatus.EXPIRED and status != TmallQrCodeScanStatus.CONFIRM:
                 status = self._get_qrcode_status_by_lg_token()
                 time.sleep(3)
-            print('success', self.cookies)
+            print('success')
+            print(self.cookies)
             break
 
     def _get_qrcode_status_by_lg_token(self) -> TmallQrCodeScanStatus:
@@ -54,7 +66,9 @@ class Command(ScrapyCommand):
         status = TmallQrCodeScanStatus(res['code'])
         if status == TmallQrCodeScanStatus.CONFIRM:
             # selenium打开url进行二次验证
-            driver = webdriver.WebDriver('/Users/xuexingdong/workspace/python/databox/chromedriver')
+            driver = webdriver.WebDriver(self.driver_path)
+            op = Options()
+            op.headless = True
             driver.get(res['url'])
             # 预留30秒二次验证时间
             sec = 30
