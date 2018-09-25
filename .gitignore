@@ -1,2 +1,5 @@
 .idea
 venv
+chromedriver
+main.py
+imgs/

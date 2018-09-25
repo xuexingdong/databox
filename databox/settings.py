@@ -9,7 +9,7 @@ SPIDER_MODULES = [
 COMMANDS_MODULE = 'databox'
 
 CONCURRENT_REQUESTS_PER_IP = 16
-DOWNLOAD_DELAY = 0.3
+DOWNLOAD_DELAY = 0.25
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
 
@@ -26,3 +26,7 @@ MONGO_URI = '127.0.0.1:27017'
 MONGO_DATABASE = 'crawler'
 
 LOG_LEVEL = logging.INFO
+
+# 驱动路径
+CHROME_DRIVER_PATH = '/Users/xuexingdong/workspace/python/databox/chromedriver'
+CHROME_DRIVER_HEADLESS = False

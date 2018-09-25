@@ -15,12 +15,12 @@ class PetChainSpider(RedisSpider):
         return [self.generate_request(1)]
 
     custom_settings = {
-        'ITEM_PIPELINES': {
+        'ITEM_PIPELINES':      {
             'databox.petchain.pipelines.PetPipeline': 300,
         },
-        'COOKIES_ENABLED': False,
+        'COOKIES_ENABLED':     False,
         'CONCURRENT_REQUESTS': 64,
-        'RETRY_TIMES': 10
+        'RETRY_TIMES':         10
     }
 
     def parse(self, response):
@@ -80,14 +80,14 @@ class PetChainSpider(RedisSpider):
         headers = {
             'Content-Type': 'application/json'
         }
-        data = {'pageNo': page,
-                'pageSize': 20,
+        data = {'pageNo':        page,
+                'pageSize':      20,
                 # 时间戳
-                'requestId': int(round(time.time() * 1000)),
+                'requestId':     int(round(time.time() * 1000)),
                 # 按稀有度排序
                 'querySortType': 'RAREDEGREE_DESC',
-                'petIds': [],
-                'appId': 1
+                'petIds':        [],
+                'appId':         1
                 }
         return Request('https://pet-chain.baidu.com/data/market/queryPetsOnSale', method='POST', headers=headers,
                        body=json.dumps(data), dont_filter=True)

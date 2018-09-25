@@ -1,5 +1,4 @@
 import json
-import logging
 import pathlib
 import sys
 import time
@@ -7,13 +6,12 @@ import time
 import qrcode
 import requests
 from scrapy.commands import ScrapyCommand
-from scrapy.exceptions import UsageError
 from scrapy_redis import connection
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome import webdriver
-import selenium.webdriver.support.expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 from databox.tmall.enums import TmallQrCodeScanStatus
@@ -26,15 +24,8 @@ class Command(ScrapyCommand):
         self.cookies = None
         self.driver_path = ''
 
-    requires_project = False
-    default_settings = {
-        'LOG_LEVEL': logging.INFO
-    }
-
     def run(self, args, opts):
-        if len(args) != 1:
-            raise UsageError()
-        self.driver_path = args[0]
+        self.driver_path = self.settings.get('CHROME_DRIVER_PATH')
         path = pathlib.Path(self.driver_path)
         if not path.is_file():
             print('driver not found')
@@ -68,14 +59,14 @@ class Command(ScrapyCommand):
             # selenium打开url进行二次验证
             driver = webdriver.WebDriver(self.driver_path)
             op = Options()
-            op.headless = True
+            op.headless = self.settings.getbool('CHROME_DRIVER_HEAD_LESS', True)
             driver.get(res['url'])
             # 预留30秒二次验证时间
             sec = 30
             try:
                 # 寻找当前用户div
                 WebDriverWait(driver, sec).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div.site-nav-user'))
+                    expected_conditions.presence_of_element_located((By.CSS_SELECTOR, 'div.site-nav-user'))
                 )
             except TimeoutException as _:
                 print('failed')
