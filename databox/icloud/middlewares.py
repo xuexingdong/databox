@@ -8,9 +8,9 @@ from databox.icloud.icloud_system import ICloudSystem
 class LocationCookiesMiddleware:
     def process_request(self, request, spider):
         # 带上cookie
-        cookie = spider.server.get('databox:icloud:cookies')
-        if cookie:
-            request.cookies = json.loads(cookie)
+        cookies = spider.server.get('databox:icloud:cookies')
+        if cookies:
+            request.cookies = json.loads(cookies)
 
 
 class ICloudLoginMiddleware:

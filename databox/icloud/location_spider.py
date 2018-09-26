@@ -22,6 +22,7 @@ class LocationSpider(RedisSpider):
             'databox.icloud.middlewares.LocationCookiesMiddleware': 400,
             'databox.icloud.middlewares.ICloudLoginMiddleware':     500
         },
+        'CONCURRENT_REQUESTS':     1,
         # icloud出现450，需要重跑 login_icloud
         'HTTPERROR_ALLOWED_CODES': [450],
         # 1分钟1次

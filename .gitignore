@@ -1,5 +1,6 @@
 .idea
 venv
+Pipfile.lock
 chromedriver
 main.py
 imgs/
