@@ -16,6 +16,8 @@ arrow = "*"
 pyzbar = "*"
 pillow = "*"
 opencv-python = "*"
+pathlib = "*"
+requests-html = "*"
 
 [dev-packages]
 

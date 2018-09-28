@@ -16,12 +16,6 @@ class GameGroupSpider(RedisSpider):
     name = 'game_group'
     redis_key = 'databox:game_group'
 
-    custom_settings = {
-        'ITEM_PIPELINES': {
-            'databox.wechat.game.pipelines.TopicPipeline': 300
-        }
-    }
-
     def __init__(self, session_id=None, *args, **kwargs):
         if not session_id:
             raise ValueError

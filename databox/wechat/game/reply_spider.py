@@ -18,7 +18,7 @@ class ReplySpider(RedisSpider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'databox.wechat.game.pipelines.ReplyPipeline': 300
+            'databox.wechat.game.pipelines.QRCodePipeline': 300
         }
     }
 
@@ -49,7 +49,7 @@ class ReplySpider(RedisSpider):
                        body=json.dumps(body), meta=data)
 
     def parse(self, response: Response):
-        res = json.loads(response.text)
+        res = json.loads(response.text, strict=False)
         if res['errcode'] != 0:
             self.logger.error(res['errmsg'])
             return
