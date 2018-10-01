@@ -94,4 +94,4 @@ def get_reply_url_data(appid, topic_id, parent_reply_id=None, count=10, offset=0
 
 
 def is_timestamp_outdated(ts):
-    return ts + 24 * 60 * 60 < arrow.now().timestamp
+    return ts + 7 * 24 * 60 * 60 < arrow.now().timestamp

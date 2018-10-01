@@ -14,6 +14,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
+from databox import common_utils
 from databox.tmall.enums import TmallQrCodeScanStatus
 
 
@@ -35,7 +36,7 @@ class Command(ScrapyCommand):
             res = requests.get('https://qrlogin.taobao.com/qrcodelogin/generateQRCode4Login.do').json()
             # qrcode_img_url是存储二维码图片的地址
             qrcode_img_url, self.lg_token, ad_token = 'https:' + res['url'], res['lgToken'], res['adToken']
-            qrcode_url = self._decode_qrcode_img_url(qrcode_img_url)
+            qrcode_url = common_utils.decode_qrcode_img_url(qrcode_img_url)
             status = TmallQrCodeScanStatus.WAITING
             # 控制台打印二维码
             self._print_qrcode(qrcode_url)
@@ -81,11 +82,6 @@ class Command(ScrapyCommand):
             conn = connection.from_settings(self.settings)
             conn.set('databox:cookies:tmall', json.dumps(self.cookies))
         return TmallQrCodeScanStatus(res['code'])
-
-    @staticmethod
-    def _decode_qrcode_img_url(img_url):
-        res = requests.post('https://cli.im/Api/Browser/deqr', data={'data': img_url}).json()
-        return res['data']['RawData']
 
     @staticmethod
     def _print_qrcode(qrcode_url):
