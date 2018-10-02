@@ -15,18 +15,19 @@ class LocationSpider(RedisSpider):
     name = 'location'
 
     custom_settings = {
-        'ITEM_PIPELINES':          {
+        'ITEM_PIPELINES':            {
             'databox.icloud.pipelines.LocationPipeline': 300,
         },
-        'DOWNLOADER_MIDDLEWARES':  {
+        'DOWNLOADER_MIDDLEWARES':    {
             'databox.icloud.middlewares.LocationCookiesMiddleware': 400,
             'databox.icloud.middlewares.ICloudLoginMiddleware':     500
         },
-        'CONCURRENT_REQUESTS':     1,
+        'CONCURRENT_REQUESTS':       1,
         # icloud出现450，需要重跑 login_icloud
-        'HTTPERROR_ALLOWED_CODES': [450],
-        # 1分钟1次
-        'DOWNLOAD_DELAY':          20
+        'HTTPERROR_ALLOWED_CODES':   [450],
+        # 2分钟1次
+        'DOWNLOAD_DELAY':            120,
+        'DOWNLOAD_FAIL_ON_DATALOSS': False
     }
 
     def __init__(self, username=None, password=None, *args, **kwargs):

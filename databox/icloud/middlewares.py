@@ -24,8 +24,8 @@ class ICloudLoginMiddleware:
                 icloud = ICloudSystem(driver_path)
                 try:
                     icloud.login(username, password)
-                except Exception as e:
-                    spider.logger.warning('icloud selenium error', e)
+                except Exception as _:
+                    spider.logger.warning('icloud selenium error')
                     icloud.close()
                     return request
                 cookies = icloud.get_cookies()
@@ -34,3 +34,7 @@ class ICloudLoginMiddleware:
                 return request
             raise IgnoreRequest
         return response
+
+    def process_exception(self, request, exception, spider):
+        spider.logger.error('spider raise an error', exc_info=True)
+        return request
