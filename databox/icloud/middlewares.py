@@ -26,10 +26,10 @@ class ICloudLoginMiddleware:
                     icloud.login(username, password)
                 except Exception as _:
                     spider.logger.warning('icloud selenium error')
-                    icloud.close()
+                    icloud.quit()
                     return request
                 cookies = icloud.get_cookies()
-                icloud.close()
+                icloud.quit()
                 spider.server.set('databox:icloud:cookies', json.dumps(cookies))
                 return request
             raise IgnoreRequest

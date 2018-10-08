@@ -14,3 +14,10 @@
 - baidu
 
 登录错误码大全：http://www.mamicode.com/info-detail-1088804.html
+
+## 依赖
+- zbar
+```text
+sudo yum install zbar zbar-devel
+
+```

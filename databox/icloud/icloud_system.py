@@ -58,5 +58,5 @@ class ICloudSystem:
             cookies[driver_cookie['name']] = driver_cookie['value']
         return cookies
 
-    def close(self):
-        self.driver.close()
+    def quit(self):
+        self.driver.quit()

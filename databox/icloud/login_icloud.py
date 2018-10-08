@@ -29,5 +29,5 @@ class Command(ScrapyCommand):
         icloud = ICloudSystem(driver_path)
         icloud.login(opts.username, opts.password)
         cookies = icloud.get_cookies()
-        icloud.close()
+        icloud.quit()
         conn.set('databox:icloud:cookies', json.dumps(cookies))
