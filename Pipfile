@@ -1,7 +1,7 @@
 [[source]]
-url = "https://pypi.org/simple"
+url = "https://pypi.doubanio.com/simple"
 verify_ssl = true
-name = "pypi"
+name = "douban"
 
 [packages]
 redis = "*"
