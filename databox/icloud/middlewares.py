@@ -21,7 +21,7 @@ class ICloudLoginMiddleware:
             username = spider.username
             password = spider.password
             if username and password:
-                icloud = ICloudSystem(driver_path)
+                icloud = ICloudSystem(driver_path, spider.settings.getbool('CHROME_DRIVER_HEADLESS'))
                 try:
                     icloud.login(username, password)
                 except Exception as _:

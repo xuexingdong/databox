@@ -31,4 +31,4 @@ LOG_LEVEL = logging.INFO
 
 # 驱动路径
 CHROME_DRIVER_PATH = '/Users/xuexingdong/workspace/python/databox/chromedriver'
-CHROME_DRIVER_HEADLESS = False
+CHROME_DRIVER_HEADLESS = True

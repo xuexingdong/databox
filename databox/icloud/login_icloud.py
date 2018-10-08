@@ -30,4 +30,4 @@ class Command(ScrapyCommand):
         icloud.login(opts.username, opts.password)
         cookies = icloud.get_cookies()
         icloud.close()
-        conn.set('databox:cookies:location', json.dumps(cookies))
+        conn.set('databox:icloud:cookies', json.dumps(cookies))

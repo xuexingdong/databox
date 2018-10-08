@@ -2,6 +2,7 @@ import pathlib
 
 from selenium import webdriver
 from selenium.webdriver import ActionChains
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions
@@ -10,12 +11,16 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 class ICloudSystem:
 
-    def __init__(self, driver_path, timeout=60):
+    def __init__(self, driver_path, headless=False, timeout=60):
 
         path = pathlib.Path(driver_path)
         if not path.is_file():
             raise ValueError('driver not found')
-        self.driver = webdriver.Chrome(executable_path=path)
+        chrome_options = Options()
+        if headless:
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--disable-gpu')
+        self.driver = webdriver.Chrome(executable_path=path, options=chrome_options)
 
         self.timeout = timeout
 

@@ -25,16 +25,26 @@ class LocationSpider(RedisSpider):
         'CONCURRENT_REQUESTS':       1,
         # icloud出现450，需要重跑 login_icloud
         'HTTPERROR_ALLOWED_CODES':   [450],
-        # 2分钟1次
-        'DOWNLOAD_DELAY':            120,
+        # 5分钟1次
+        'DOWNLOAD_DELAY':            300,
         'DOWNLOAD_FAIL_ON_DATALOSS': False
     }
 
-    def __init__(self, username=None, password=None, *args, **kwargs):
+    def __init__(self, secret_file=None, *args, **kwargs):
+        """
+        用文件的方式初始化，避免账号密码通过命令给出导致泄露
+        :param username:
+        :param password:
+        :param args:
+        :param kwargs:
+        """
         super(LocationSpider, self).__init__(*args, **kwargs)
-        self.logger.info(f"username {username}, password {password}")
-        self.username = username
-        self.password = password
+        with open(secret_file) as f:
+            username = f.readline().strip()
+            password = f.readline().strip()
+            self.logger.info(f"username {username}, password {password}")
+            self.username = username
+            self.password = password
 
     def start_requests(self):
         headers = {
