@@ -27,6 +27,7 @@ DOWNLOAD_FAIL_ON_DATALOSS = False
 MONGO_URI = '127.0.0.1:27017'
 MONGO_DATABASE = 'crawler'
 
+LOG_FILE = 'data/log.txt'
 LOG_LEVEL = logging.INFO
 
 # 驱动路径
