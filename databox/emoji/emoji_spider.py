@@ -1,11 +1,12 @@
 from scrapy import Spider
+from scrapy.exceptions import NotConfigured
 
 from databox.emoji.items import Emoji
 
 
 class EmojiSpider(Spider):
     """
-    Crawl emoji-code and emotion, about five minutes.
+    Crawl emoji-code and emotion, using about five minutes.
     """
     name = 'emoji'
     start_urls = ['https://unicode.org/emoji/charts/emoji-list.html']
@@ -18,8 +19,10 @@ class EmojiSpider(Spider):
     }
 
     def __init__(self, file_path=None, *args, **kwargs):
+        if not file_path:
+            raise NotConfigured('You must define a file_path to save the emoji result')
         super(EmojiSpider, self).__init__(*args, **kwargs)
-        self.filepath = file_path
+        self.file_path = file_path
 
     def parse(self, response):
         table = response.css('table')
