@@ -8,6 +8,11 @@ from databox.icloud.icloud_system import ICloudSystem
 
 class Command(ScrapyCommand):
 
+    requires_project = True
+
+    def short_desc(self):
+        return "Login icloud"
+
     def add_options(self, parser):
         ScrapyCommand.add_options(self, parser)
         parser.add_option('-u', '--username',

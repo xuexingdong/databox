@@ -33,41 +33,38 @@ def get_day_info_by_code(code, start=None, end=None, fq_type=1):
     if not end:
         end = arrow.now().format('YYYYMMDD')
     params = {
-        'from': 'pc',
-        'os_ver': 1,
-        'cuid': 'xxx',
-        'vv': '100',
-        'format': 'json',
+        'from':       'pc',
+        'os_ver':     1,
+        'cuid':       'xxx',
+        'vv':         '100',
+        'format':     'json',
         'stock_code': 'sh' + code,
-        'step': 3,
-        'start': end,
-        'count': 160,
-        'fq_type': 'front' if fq_type else 'no'
+        'step':       3,
+        'start':      end,
+        'count':      160,
+        'fq_type':    'front' if fq_type else 'no'
     }
     # 停止标志
-    stop = 0
-    while not stop:
+    while True:
         params['start'] = end
         res = requests.get(URL_GET_DAY_INFO, params=params).json()
         # 无数据返回
         if 'mashData' not in res:
-            stop = 1
-        else:
-            data = res['mashData']
-            if len(data) < 160:
-                stop = 1
-            for day_info in data:
-                end = day_info['date']
-                # 日期超出范围
-                if day_info['date'] < int(start):
-                    stop = 1
-                    break
-                return_dict = {
-                    'date': day_info['date'],
-                    'open': round(day_info['kline']['open'], PRECISION),
-                    'high': round(day_info['kline']['high'], PRECISION),
-                    'low': round(day_info['kline']['low'], PRECISION),
-                    'close': round(day_info['kline']['close'], PRECISION),
-                    'volume': day_info['kline']['volume'],
-                    'netChangeRatio': round(day_info['kline']['netChangeRatio'], PRECISION)}
-                yield return_dict
+            return
+        data = res['mashData']
+        if len(data) < 160:
+            return
+        for day_info in data:
+            end = day_info['date']
+            # 日期超出范围
+            if day_info['date'] < int(start):
+                return
+            return_dict = {
+                'date':           day_info['date'],
+                'open':           round(day_info['kline']['open'], PRECISION),
+                'high':           round(day_info['kline']['high'], PRECISION),
+                'low':            round(day_info['kline']['low'], PRECISION),
+                'close':          round(day_info['kline']['close'], PRECISION),
+                'volume':         day_info['kline']['volume'],
+                'netChangeRatio': round(day_info['kline']['netChangeRatio'], PRECISION)}
+            yield return_dict
