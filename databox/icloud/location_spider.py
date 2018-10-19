@@ -25,8 +25,8 @@ class LocationSpider(RedisSpider):
         'CONCURRENT_REQUESTS':       1,
         # icloud出现450，需要重跑 login_icloud
         'HTTPERROR_ALLOWED_CODES':   [450],
-        # 5分钟1次
-        'DOWNLOAD_DELAY':            300,
+        # 3分钟1次
+        'DOWNLOAD_DELAY':            180,
         'DOWNLOAD_FAIL_ON_DATALOSS': False
     }
 
