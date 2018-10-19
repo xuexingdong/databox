@@ -26,8 +26,9 @@ class LocationSpider(RedisSpider):
         # icloud出现450，需要重跑 login_icloud
         'HTTPERROR_ALLOWED_CODES':   [450],
         # 3分钟1次
-        'DOWNLOAD_DELAY':            180,
-        'DOWNLOAD_FAIL_ON_DATALOSS': False
+        'DOWNLOAD_DELAY':            120,
+        'DOWNLOAD_FAIL_ON_DATALOSS': False,
+        'RETRY_TIMES':               0,
     }
 
     def __init__(self, secret_file=None, *args, **kwargs):
