@@ -1,0 +1,16 @@
+LABELS = {
+    '译　　名':   'translate_name',
+    '片　　名':   'name',
+    '年　　代':   'year',
+    '产　　地':   'region',
+    '类　　别':   'category',
+    '语　　言':   'language',
+    '字　　幕':   'subtitles',
+    '上映日期':   'release_date',
+    'IMDb评分': 'imdb_rating',
+    '豆瓣评分':   'douban_rating',
+    '片　　长':   'length',
+    '导　　演':   'director',
+    '主　　演':   'starring',
+    # '简　　介':   'introduction',
+}
