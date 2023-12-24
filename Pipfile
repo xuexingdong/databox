@@ -1,25 +1,22 @@
 [[source]]
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
 verify_ssl = true
-name = "tsinghua"
+name = "pypi"
 
 [packages]
-redis = "*"
+scrapy-playwright = "*"
+scrapy = "*"
 pycryptodome = "*"
-requests = "*"
-qrcode = "*"
-selenium = "*"
-Scrapy = "*"
-scrapy-redis = "*"
-pymongo = "*"
-arrow = "*"
-pyzbar = "*"
-pillow = "*"
-opencv-python = "*"
-pathlib = "*"
 requests-html = "*"
+arrow = "*"
+pillow = "*"
+pyzbar = "*"
+selenium = "*"
+scrapy-redis = "*"
+qrcode = "*"
+pymongo = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"
