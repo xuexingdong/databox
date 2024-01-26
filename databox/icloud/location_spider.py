@@ -3,7 +3,7 @@ import json
 import arrow
 from scrapy import Request
 from scrapy.http import Response
-from scrapy_redis.spiders import RedisSpider
+from databox.redis_spider import RedisSpider
 
 from databox.icloud.items import LocationItem
 

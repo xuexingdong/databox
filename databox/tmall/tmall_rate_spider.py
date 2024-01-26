@@ -3,7 +3,7 @@ import pickle
 from urllib.parse import urlencode
 
 from scrapy.http import Response
-from scrapy_redis.spiders import RedisSpider
+from databox.redis_spider import RedisSpider
 
 from databox.tmall.item_loaders import TmallRateLoader
 from databox.tmall.items import TmallRateItem

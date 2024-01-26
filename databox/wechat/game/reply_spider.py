@@ -3,7 +3,7 @@ import json
 
 from scrapy import Request
 from scrapy.http import Response
-from scrapy_redis.spiders import RedisSpider
+from databox.redis_spider import RedisSpider
 
 from databox.wechat.game.items import ReplyItem
 from databox.wechat.game.utils import get_reply_url_data, get_game_reply_list_url, is_timestamp_outdated

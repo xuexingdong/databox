@@ -1,4 +1,5 @@
-from scrapy.loader.processors import TakeFirst, Identity
+from itemloaders import Identity
+from itemloaders.processors import TakeFirst
 
 
 class PetLoader:

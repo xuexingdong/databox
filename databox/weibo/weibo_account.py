@@ -1,6 +1,8 @@
-from typing import Iterable
+from typing import Iterable, Any
 
+from playwright.async_api import Page
 from scrapy import Spider, Request
+from scrapy.http import Response
 
 
 class WeiboAccountSpider(Spider):
@@ -10,21 +12,52 @@ class WeiboAccountSpider(Spider):
     }
 
     custom_settings = {
-        "DOWNLOAD_HANDLERS": {
-            "http": "scrapy_pyppeteer.handler.ScrapyPyppeteerDownloadHandler",
-            "https": "scrapy_pyppeteer.handler.ScrapyPyppeteerDownloadHandler",
+        'DOWNLOAD_HANDLERS': {
+            'http': 'scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler',
+            'https': 'scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler',
         },
-        "TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor",
-        "PYPPETEER_LAUNCH_OPTIONS": {
-            "executablePath": "",
-            "headless": False
-        },
+        'TWISTED_REACTOR': 'twisted.internet.asyncioreactor.AsyncioSelectorReactor',
+        'PLAYWRIGHT_CONTEXT': {
+            "persistent": {
+                "user_data_dir": "/Users/xuexingdong/workspace/databox/user-dir",  # will be a persistent context
+            }
+        }
     }
 
-    def start_requests(self) -> Iterable[Request]:
-        yield Request("https://www.baidu.com/", meta={"pyppeteer": True}, dont_filter=True)
+    def __init__(self, username=None, password=None, **kwargs: Any):
+        super().__init__(**kwargs)
+        self.username = username
+        self.password = password
 
-    def parse(self, response):
-        # 'response' contains the page as seen by the browser
-        print(response)
-        yield {"url": response.url}
+    def start_requests(self) -> Iterable[Request]:
+        yield Request('https://login.sina.com.cn/signup/signin.php',
+                      meta={
+                          'playwright': True,
+                          'playwright_include_page': True,
+                          # 'playwright_page_methods': [
+                          #     PageMethod('fill', selector='#username', value=self.username),
+                          #     PageMethod('fill', selector='#password', value=self.password),
+                          #     PageMethod('click', selector='input[type=submit]'),
+                          # ],
+                      },
+                      dont_filter=True)
+
+    async def parse(self, response, **kwargs):
+        page: Page = response.meta['playwright_page']
+        await page.fill(selector='#username', value=self.username),
+        await page.fill(selector='#password', value=self.password),
+        await page.click(selector='input[type=submit]')
+        await page.wait_for_load_state('networkidle')
+        check_img_path = 'screenshot.png'
+        await page.locator('#check_img').screenshot(path=check_img_path)
+        door = input()
+        await page.fill(selector='#door', value=door),
+        await page.click(selector='input[type=submit]')
+        await page.wait_for_load_state('networkidle')
+        await page.wait_for_timeout(1000000)
+
+    async def parse_second(self, response: Response, **kwargs: Any) -> Any:
+        page: Page = response.meta['playwright_page']
+
+    def recg_check_img(self, check_img_path):
+        return check_img_path

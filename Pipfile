@@ -5,18 +5,28 @@ name = "pypi"
 
 [packages]
 scrapy-playwright = "*"
-scrapy = "*"
 pycryptodome = "*"
 requests-html = "*"
 arrow = "*"
 pillow = "*"
 pyzbar = "*"
 selenium = "*"
-scrapy-redis = "*"
 qrcode = "*"
 pymongo = "*"
+opencv-python = "*"
+matplotlib = "*"
+opencv-contrib-python = "*"
+pytesseract = "*"
+httpx = "*"
+scrapy-redis = "*"
+scrapy = "*"
+mitmproxy = "*"
+pyautogui = "*"
+openai-whisper = "*"
+pyppeteer = "*"
+pytest-playwright = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.8"
+python_version = "3.11"

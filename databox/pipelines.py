@@ -3,8 +3,7 @@ import abc
 import pymongo
 
 
-class MongoPipeline:
-    __metaclass__ = abc.ABCMeta
+class MongoPipeline(abc.ABC):
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = 'mongodb://' + mongo_uri
@@ -19,7 +18,8 @@ class MongoPipeline:
 
     @abc.abstractmethod
     def process_item(self, item, spider):
-        pass
+        self.db[spider.collection].update_one({'id': item['id']}, {'$set': item['content']}, True)
+        return item
 
     @classmethod
     def from_crawler(cls, crawler):
