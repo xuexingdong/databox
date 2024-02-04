@@ -1,16 +1,12 @@
 import json
 
-import httpx
+import qrcode
 
-from databox.xiaohongshu.utils import XiaohongshuUtil
+from databox.xiaohongshu.xhs_client import XhsClient
 
 
 class XiaohongshuHeaderMiddleware:
-    """
-    微博访客cookie获取
-    """
-
-    COOKIE_KEY = 'weibo:visit_cookies'
+    COOKIE_KEY = 'xhs:visit_cookies'
 
     RC4_SECRET_VERSION = '1'
     LOCAL_ID_KEY = 'a1'
@@ -18,33 +14,40 @@ class XiaohongshuHeaderMiddleware:
     MINI_BROSWER_INFO_KEY = 'b1'
 
     def __init__(self):
-        self.client = httpx.AsyncClient(max_redirects=0)
+        self.xhs_client = XhsClient()
 
     def process_request(self, request, spider):
-        if 'X-S-COMMON' in request.headers:
+        if 'X-S-Common' in request.headers:
             return
-        XiaohongshuUtil.get_xiaohongshu_headers(request.url, json.loads(request.body))
+        if hasattr(spider, 'need_login') and spider.need_login:
+            if not self.xhs_client.check_login():
+                qr_code = self.xhs_client.create_qr_code()
+                qr = qrcode.QRCode()
+                qr.add_data(qr_code.url)
+                qr.make(fit=True)
+                qr.print_ascii(invert=True)
+                if self.xhs_client.wait_until_login(qr_code):
+                    cookies = self.xhs_client.get_cookie_dict()
+                    request.headers.update(cookies)
+        new_body = self.xhs_client.handle_post_data(json.loads(request.body))
+        xhs_headers = self.xhs_client.get_xhs_headers(request.url, json.loads(new_body))
+        new_headers = request.headers | xhs_headers
+        return request.replace(headers=new_headers, body=new_body, cookies=self.xhs_client.get_cookie_dict())
 
-    def httpx_cookie_to_scrapy_cookie(self, httpx_cookie):
-        # Convert httpx Cookie to Scrapy cookie format
-        scrapy_cookies = []
-        for name, value in httpx_cookie.items():
-            scrapy_cookies.append(f'{name}={value}')
-
-        return '; '.join(scrapy_cookies)
-
-
-class WeiboCookieMiddleware:
-    def process_request(self, request, spider):
-        spider.logger.info('weibo cookies')
-
-        # https: // passport.weibo.com
-        # 带上cookie
-        request.headers.setdefault('Cookie',
-                                   'SINAGLOBAL=6587733228028.543.1703397082379; _s_tentry=-; Apache=9536511089833.73.1704369758200; ULV=1704369758235:4:2:2:9536511089833.73.1704369758200:1704352022827; XSRF-TOKEN=i86b1h6hRiSQKChs-oNMDqUF; UOR=,,www.google.com; login_sid_t=8d2e28b5c188ad96688bac5706dd3945; cross_origin_proto=SSL; SUB=_2AkMSyyWvf8NxqwFRmfoWymvla4p0zAzEieKkl9R0JRMxHRl-yT9vqm1TtRB6OUsLQYmQ5H6TKHUEQW-J6Ddaqk7dlV_p; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9Wh8c8bpeD2OjQfCz2b-hhi1; WBPSESS=V0zdZ7jH8_6F0CA8c_ussZJzTWFlOwh0ij5L3VSJbifD0eXQj950NEhUlWWbgxRXJiN32pB7BRE33m422M3MDQq8CA-xhrQnUQ5qTTa8sSdIz5OsuFcuuWWlCrQ7VCy23ySELRLPL3gqbEOihpOubNSuGsX3manaywUDguvLhMs=; PC_TOKEN=091058df8f')
-
-
-class WeiboLoginMiddleware:
     def process_response(self, request, response, spider):
-        spider.logger.info('weibo login')
-        return response
+        if response.status == 588:
+            spider.logger.info(response.text)
+            return
+        if response.status == 461:
+            params = {
+                'redirectPath': response.url,
+                'callFrom': 'web',
+                'biz': 'sns_web',
+                'verifyUuid': response.headers['verifyUuid'],
+                'verifyType': response.headers['verifyType'],
+                'verifyBiz': response.status
+            }
+            self.xhs_client.auto_rotate_captcha(params)
+            spider.logger.info(params)
+            # https://fe-static.xhscdn.com/formula-static/login/public/js/main.8cee1b6.js
+            return

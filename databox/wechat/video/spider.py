@@ -1,10 +1,9 @@
-import asyncio
 import os
 from pathlib import Path
 
 import httpx
 import whisper
-from pyppeteer import launch
+from playwright.sync_api import sync_playwright
 
 
 class WechatVideoSpider:
@@ -28,7 +27,7 @@ class WechatVideoSpider:
                             f.write(chunk)
                             f.flush()
                             i += 1
-        decode_dict = asyncio.run(self.get_decode_dict(media['decode_key']))
+        decode_dict = self.get_decode_dict(media['decode_key'])
         decode_array = [int(decode_dict[str(i)]) for i in range(len(decode_dict))]
         output_mp4_name = (os.path.join(self.current_dir, object_id + '_decoded.mp4'))
         if not os.path.exists(output_mp4_name):
@@ -38,13 +37,16 @@ class WechatVideoSpider:
             'subtitle': subtitle_content
         }
 
-    async def get_decode_dict(self, decode_key):
-        browser = await launch(handleSIGINT=False, handleSIGTERM=False, handleSIGHUP=False)
-        page = await browser.newPage()
-        await page.goto(f'file:///{self.html}')
-        await page.waitForFunction('typeof Module !== "undefined" && typeof Module.WxIsaac64 === "function"')
+    def get_decode_dict(self, decode_key):
+        playwright = sync_playwright().start()
+        browser = playwright.chromium.launch(headless=False)
+        user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        context = browser.new_context(no_viewport=True, user_agent=user_agent)
+        page = context.new_page()
+        page.goto(f'file:///{self.html}')
+        page.wait_for_function('typeof Module !== "undefined" && typeof Module.WxIsaac64 === "function"')
         # 执行自定义 JavaScript 代码
-        return await page.evaluate(f"getDecryptionArray('{decode_key}')")
+        return page.evaluate(f"getDecryptionArray('{decode_key}')")
 
     def close(self):
         self.client.close()

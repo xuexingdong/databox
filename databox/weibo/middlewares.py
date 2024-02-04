@@ -1,6 +1,6 @@
 import json
-import time
 import re
+import time
 from urllib.parse import quote, urlparse
 
 import httpx
@@ -15,9 +15,9 @@ class WeiboVisitorCookieMiddleware:
     COOKIE_KEY = 'weibo:visit_cookies'
 
     def __init__(self):
-        self.client = httpx.AsyncClient(max_redirects=0)
+        self.client = httpx.Client(max_redirects=0)
 
-    async def process_request(self, request, spider):
+    def process_request(self, request, spider):
         if request.cookies:
             return
             # visitor的路径直接访问
@@ -35,22 +35,22 @@ class WeiboVisitorCookieMiddleware:
             passport_url = f'https://passport.weibo.com/visitor/visitor?entry=miniblog&a=enter&url={quoted_url}&domain=weibo.com&ua={quote(request.headers["User-Agent"], safe="")}&_rand={int(time.time() * 1000)}&sudaref='
             headers = {
                 'Origin': 'https://passport.weibo.com',
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
                 'Referer': passport_url
             }
             spider.logger.info(f'passport_url: {passport_url}')
-            response = await self.client.post('https://passport.weibo.com/visitor/genvisitor', data={
+            response = self.client.post('https://passport.weibo.com/visitor/genvisitor', data={
                 'cb': 'gen_callback'
             })
             match = re.search(r'\((.*)\)', response.text)
             data = json.loads(match.group(1))['data']
             tid = data['tid']
-            response = await self.client.post('https://passport.weibo.com/visitor/genvisitor2', headers=headers,
-                                              data={
-                                                  'cb': 'visitor_gray_callback',
-                                                  'tid': tid,
-                                                  'from': 'weibo'
-                                              })
+            response = self.client.post('https://passport.weibo.com/visitor/genvisitor2', headers=headers,
+                                        data={
+                                            'cb': 'visitor_gray_callback',
+                                            'tid': tid,
+                                            'from': 'weibo'
+                                        })
             match = re.search(r'\((.*)\)', response.text)
             data = json.loads(match.group(1))['data']
             sub = data['sub']

@@ -1,10 +1,11 @@
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
-from databox.xiaohongshu.xhs_user_spider import XiaohongshuUserSpider
+from databox.xiaohongshu.xhs_home_feed_spider import XiaohongshuHomeFeedSpider
+from databox.xiaohongshu.xhs_note_spider import XiaohongshuNoteSpider
 
 if __name__ == '__main__':
-    # install_reactor('twisted.internet.asyncioreactor.AsyncioSelectorReactor')
     process = CrawlerProcess(get_project_settings())
-    process.crawl(XiaohongshuUserSpider, profile_str='59f985684eacab1ce3cc5409')
+    process.crawl(XiaohongshuHomeFeedSpider)
+    # process.crawl(XiaohongshuNoteSpider, user_id='1')
     process.start()

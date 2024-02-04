@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-scrapy-playwright = "*"
 pycryptodome = "*"
 requests-html = "*"
 arrow = "*"
@@ -23,7 +22,6 @@ scrapy = "*"
 mitmproxy = "*"
 pyautogui = "*"
 openai-whisper = "*"
-pyppeteer = "*"
 pytest-playwright = "*"
 
 [dev-packages]

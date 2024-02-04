@@ -14,3 +14,12 @@ class User(Item):
     fans = Field()
     interaction = Field()
     _origin_data = Field()
+
+
+class Note(Item):
+    id = Field()
+    model_type = Field()
+    note_card = Field()
+    track_id = Field()
+    ignore = Field()
+    _origin_data = Field()

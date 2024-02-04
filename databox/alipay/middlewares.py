@@ -1,6 +1,6 @@
 import json
-import time
 import re
+import time
 from urllib.parse import quote, urlparse
 
 import httpx
@@ -17,9 +17,9 @@ class AlipayCookieMiddleware:
     COOKIE_KEY = 'alipay:cookies'
 
     def __init__(self):
-        self.client = httpx.AsyncClient(max_redirects=0)
+        self.client = httpx.Client(max_redirects=0)
 
-    async def process_request(self, request, spider):
+    def process_request(self, request, spider):
         if request.cookies:
             return
             # visitor的路径直接访问
@@ -41,18 +41,18 @@ class AlipayCookieMiddleware:
                 'Referer': passport_url
             }
             spider.logger.info(f'passport_url: {passport_url}')
-            response = await self.client.post('https://passport.weibo.com/visitor/genvisitor', data={
+            response = self.client.post('https://passport.weibo.com/visitor/genvisitor', data={
                 'cb': 'gen_callback'
             })
             match = re.search(r'\((.*)\)', response.text)
             data = json.loads(match.group(1))['data']
             tid = data['tid']
-            response = await self.client.post('https://passport.weibo.com/visitor/genvisitor2', headers=headers,
-                                              data={
-                                                  'cb': 'visitor_gray_callback',
-                                                  'tid': tid,
-                                                  'from': 'weibo'
-                                              })
+            response = self.client.post('https://passport.weibo.com/visitor/genvisitor2', headers=headers,
+                                        data={
+                                            'cb': 'visitor_gray_callback',
+                                            'tid': tid,
+                                            'from': 'weibo'
+                                        })
             match = re.search(r'\((.*)\)', response.text)
             data = json.loads(match.group(1))['data']
             sub = data['sub']

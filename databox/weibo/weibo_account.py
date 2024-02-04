@@ -1,8 +1,7 @@
 from typing import Iterable, Any
 
-from playwright.async_api import Page
+from playwright.sync_api import Page
 from scrapy import Spider, Request
-from scrapy.http import Response
 
 
 class WeiboAccountSpider(Spider):
@@ -16,7 +15,6 @@ class WeiboAccountSpider(Spider):
             'http': 'scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler',
             'https': 'scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler',
         },
-        'TWISTED_REACTOR': 'twisted.internet.asyncioreactor.AsyncioSelectorReactor',
         'PLAYWRIGHT_CONTEXT': {
             "persistent": {
                 "user_data_dir": "/Users/xuexingdong/workspace/databox/user-dir",  # will be a persistent context
@@ -42,22 +40,19 @@ class WeiboAccountSpider(Spider):
                       },
                       dont_filter=True)
 
-    async def parse(self, response, **kwargs):
+    def parse(self, response, **kwargs):
         page: Page = response.meta['playwright_page']
-        await page.fill(selector='#username', value=self.username),
-        await page.fill(selector='#password', value=self.password),
-        await page.click(selector='input[type=submit]')
-        await page.wait_for_load_state('networkidle')
+        page.fill(selector='#username', value=self.username),
+        page.fill(selector='#password', value=self.password),
+        page.click(selector='input[type=submit]')
+        page.wait_for_load_state('networkidle')
         check_img_path = 'screenshot.png'
-        await page.locator('#check_img').screenshot(path=check_img_path)
+        page.locator('#check_img').screenshot(path=check_img_path)
         door = input()
-        await page.fill(selector='#door', value=door),
-        await page.click(selector='input[type=submit]')
-        await page.wait_for_load_state('networkidle')
-        await page.wait_for_timeout(1000000)
-
-    async def parse_second(self, response: Response, **kwargs: Any) -> Any:
-        page: Page = response.meta['playwright_page']
+        page.fill(selector='#door', value=door),
+        page.click(selector='input[type=submit]')
+        page.wait_for_load_state('networkidle')
+        page.wait_for_timeout(1000000)
 
     def recg_check_img(self, check_img_path):
         return check_img_path

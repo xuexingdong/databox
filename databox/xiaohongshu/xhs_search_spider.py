@@ -4,7 +4,7 @@ from typing import Iterable, Any
 from scrapy import Spider, Request
 from scrapy.http import Response, JsonRequest
 
-from databox.xiaohongshu.utils import XiaohongshuUtil
+from databox.xiaohongshu.xhs_client import XhsClient
 
 
 class XiaohongshuSpider(Spider):
@@ -30,7 +30,7 @@ class XiaohongshuSpider(Spider):
             "keyword": self.keyword,
             "page": self.page,
             "page_size": self.page_size,
-            "search_id": XiaohongshuUtil.generate_search_id(),
+            "search_id": XhsClient.generate_search_id(),
             "sort": "general",
             "note_type": 0,
             "ext_flags": [],
