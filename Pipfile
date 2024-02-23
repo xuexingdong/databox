@@ -23,6 +23,8 @@ mitmproxy = "*"
 pyautogui = "*"
 openai-whisper = "*"
 pytest-playwright = "*"
+pyexecjs = "*"
+scrapy-playwright = "*"
 
 [dev-packages]
 

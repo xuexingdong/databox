@@ -1,11 +1,12 @@
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
+from scrapy.utils.reactor import install_reactor
 
-from databox.xiaohongshu.xhs_home_feed_spider import XiaohongshuHomeFeedSpider
-from databox.xiaohongshu.xhs_note_spider import XiaohongshuNoteSpider
+from databox.tiktok.tiktok_video_spider import TiktokVideoSpider
 
 if __name__ == '__main__':
+    install_reactor('twisted.internet.asyncioreactor.AsyncioSelectorReactor')
     process = CrawlerProcess(get_project_settings())
-    process.crawl(XiaohongshuHomeFeedSpider)
+    process.crawl(TiktokVideoSpider, username='openai')
     # process.crawl(XiaohongshuNoteSpider, user_id='1')
     process.start()
