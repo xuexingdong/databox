@@ -37,5 +37,5 @@ LOG_LEVEL = logging.INFO
 
 PLAYWRIGHT_LAUNCH_OPTIONS = {
     "headless": False,
-    "timeout": 20 * 1000,  # 20 seconds
+    "timeout": 30 * 1000
 }

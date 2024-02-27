@@ -1,27 +1,48 @@
-from typing import Iterable, Any
+from datetime import datetime
+from typing import Any
+from urllib.parse import urlparse
 
-from scrapy import Spider, Request
 from scrapy.http import Response
 
+from databox.redis_spider import RedisSpider
+from databox.tiktok.items import TiktokVideo
 
-class TiktokVideoSpider(Spider):
+
+class TiktokVideoSpider(RedisSpider):
     name = 'tiktok:video'
+    redis_key = name
     custom_settings = {
-        'DOWNLOAD_HANDLERS': {
-            "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
-            "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+        'DOWNLOADER_MIDDLEWARES': {
+            'databox.tiktok.middlewares.TiktokCookieMiddleWare': 501
         },
-        'TWISTED_REACTOR': "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
+        'ITEM_PIPELINES': {
+            'databox.tiktok.pipelines.TiktokVideoPipeline': 800
+        },
+        'DEFAULT_REQUEST_HEADERS': {
+            "User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+            "Referer": "https://www.tiktok.com"
+        }
     }
 
-    def __init__(self, *args, username=None, **kwargs):
-        super().__init__(**kwargs)
-        self.username = username
-
-    def start_requests(self) -> Iterable[Request]:
-        url = f'https://www.tiktok.com/@{self.username}'
-        return [Request(url, dont_filter=True, meta={"playwright": True, "playwright_include_page": True})]
-
     def parse(self, response: Response, **kwargs: Any) -> Any:
-        # https://www.tiktok.com/api/post/item_list
-        print(response.text)
+        print(response.url)
+        res = response.json()
+        for item in res['itemList']:
+            author_info = item['author']
+            video_info = item['video']
+
+            video = TiktokVideo()
+            video['id'] = item['id']
+            video['nickname'] = author_info['nickname']
+            video['avatar'] = author_info['avatarThumb']
+            video['create_time'] = datetime.fromtimestamp(item['createTime'])
+            video['desc'] = item['desc']
+            video['cover'] = video_info['cover']
+            video['download_addr'] = video_info['downloadAddr']
+            print(video['id'])
+            yield video
+
+    def parse_video(self, response, **kwargs: Any) -> Any:
+        file_name = urlparse(response.url).path.rsplit('/')[-2] + '.mp4'
+        with open(file_name, 'wb') as f:
+            f.write(response.body)

@@ -25,6 +25,8 @@ openai-whisper = "*"
 pytest-playwright = "*"
 pyexecjs = "*"
 scrapy-playwright = "*"
+peewee = "*"
+playwright-stealth = "*"
 
 [dev-packages]
 
