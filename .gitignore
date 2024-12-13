@@ -6,3 +6,4 @@ data
 __pycache__
 userdata
 /*.db
+.DS_Store
