@@ -14,19 +14,21 @@ class GithubSearchSpider(RedisSpider):
     redis_key = "databox:" + name
     custom_settings = {
         'MAX_IDLE_TIME_BEFORE_CLOSE': 60,
-        'CONCURRENT_REQUESTS': 2,
+        'CONCURRENT_REQUESTS': 1,
         'RETRY_ENABLED': True,
-        'RETRY_TIMES': 5,
+        'RETRY_TIMES': 3,
+        'RETRY_DELAY': 10,
         'RETRY_HTTP_CODES': [429]
     }
 
-    def __init__(self, q=None, match_words=None, *args, **kwargs):
+    def __init__(self, q=None, p=None, match_words=None, *args, **kwargs):
         super(GithubSearchSpider, self).__init__(*args, **kwargs)
         self.q = q
+        self.p = p
         self.match_words = match_words
 
     def start_requests(self):
-        yield scrapy.Request(url=self.gen_search_url(self.q), dont_filter=True)
+        yield scrapy.Request(url=self.gen_search_url(self.q, self.p), dont_filter=True)
 
     def parse(self, response: Response, **kwargs: Any) -> Any:
         results = response.css('div[data-testid=results-list] > div')
