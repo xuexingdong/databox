@@ -13,15 +13,14 @@ class GithubSearchSpider(RedisSpider):
     name = 'github_search'
     redis_key = "databox:" + name
     custom_settings = {
-        'MAX_IDLE_TIME_BEFORE_CLOSE': 60,
+        'MAX_IDLE_TIME_BEFORE_CLOSE': 120,
         'CONCURRENT_REQUESTS': 1,
-        'RETRY_ENABLED': True,
-        'RETRY_TIMES': 3,
-        'RETRY_DELAY': 10,
-        'RETRY_HTTP_CODES': [429]
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
+        'CONCURRENT_REQUESTS_PER_IP': 1,
+        'DOWNLOAD_DELAY': 5,
     }
 
-    def __init__(self, q=None, p=None, match_words=None, *args, **kwargs):
+    def __init__(self, q=None, p=1, match_words=None, *args, **kwargs):
         super(GithubSearchSpider, self).__init__(*args, **kwargs)
         self.q = q
         self.p = p
@@ -31,8 +30,10 @@ class GithubSearchSpider(RedisSpider):
         yield scrapy.Request(url=self.gen_search_url(self.q, self.p), dont_filter=True)
 
     def parse(self, response: Response, **kwargs: Any) -> Any:
+        self.logger.info(response.url)
         results = response.css('div[data-testid=results-list] > div')
         if not results:
+            self.logger.error("all finish")
             return
         for result in results:
             repo_url = response.urljoin(result.css('div.search-title > a::attr(href)').get())
