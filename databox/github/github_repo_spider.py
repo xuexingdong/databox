@@ -13,7 +13,7 @@ class GithubRepoSpider(RedisSpider):
     name = 'github_repo'
     redis_key = "databox:" + name
     custom_settings = {
-        'MAX_IDLE_TIME_BEFORE_CLOSE': 120,
+        'MAX_IDLE_TIME_BEFORE_CLOSE': 60,
         'CONCURRENT_REQUESTS': 1,
         'CONCURRENT_REQUESTS_PER_IP': 2,
         'ITEM_PIPELINES': {
@@ -90,7 +90,6 @@ class GithubRepoSpider(RedisSpider):
             return
         # 提取 README 内容
         repo = response.meta['repo']
-        self.logger.info(repo)
         readme_content = response.text
         repo['content'] = readme_content.strip()
         yield repo
