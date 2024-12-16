@@ -105,3 +105,15 @@ class GithubRepoSpider(RedisSpider):
             return False
         path_parts = parsed_url.path.strip("/").split("/")
         return len(path_parts) == 2
+
+# memo
+#   install_reactor('twisted.internet.asyncioreactor.AsyncioSelectorReactor')
+#     process = CrawlerProcess(get_project_settings())
+#     process.crawl(GithubRepoSearchSpider, q='mcp-server', p=25, updated_after='2024-11-24')
+#     process.crawl(GithubRepoSpider,
+#                   match_repos=[
+#                       'https://github.com/punkpeye/awesome-mcp-servers',
+#                       'https://github.com/wong2/awesome-mcp-servers',
+#                       'https://github.com/modelcontextprotocol/servers'
+#                   ], match_words=['mcp', 'modelcontextprotocol'])
+#     process.start()
