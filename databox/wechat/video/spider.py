@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 
 import httpx
-import whisper
 from playwright.sync_api import sync_playwright
 
 
@@ -53,11 +52,12 @@ class WechatVideoSpider:
 
     @staticmethod
     def parse_with_whisper(file_name):
-        model = whisper.load_model("base")
-        print('load ok')
-        result = model.transcribe(file_name, initial_prompt='以下是普通话的句子。')
-        print('result ok')
-        return result["text"]
+        # model = whisper.load_model("base")
+        # print('load ok')
+        # result = model.transcribe(file_name, initial_prompt='以下是普通话的句子。')
+        # print('result ok')
+        # return result["text"]
+        return ''
 
     @staticmethod
     def xor_with_mp4(input_mp4, output_mp4, decode_array):

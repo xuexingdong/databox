@@ -28,6 +28,8 @@ REDIS_URL = 'redis://localhost:6379/0'
 MONGO_URI = '127.0.0.1:27017'
 MONGO_DATABASE = 'databox'
 
+CONNECTION_STRING = "mysql+pymysql://root:123456789@localhost:3306/databox"
+
 # LOG_FILE = 'data/log.txt'
 LOG_LEVEL = logging.INFO
 

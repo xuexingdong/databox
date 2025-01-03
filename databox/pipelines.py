@@ -1,6 +1,7 @@
 import abc
 
 import pymongo
+from sqlalchemy import create_engine
 
 
 class MongoPipeline(abc.ABC):
@@ -26,4 +27,31 @@ class MongoPipeline(abc.ABC):
         return cls(
             mongo_uri=crawler.settings.get('MONGO_URI'),
             mongo_db=crawler.settings.get('MONGO_DATABASE')
+        )
+
+
+class DBPipeline(abc.ABC):
+    engine = None
+
+    def __init__(self, connection_string):
+        self.connection_string = connection_string
+
+    def open_spider(self, spider):
+        """
+        Initializes database connection and sessionmaker.
+        Creates items table.
+        """
+        self.engine = create_engine(self.connection_string)
+
+    @abc.abstractmethod
+    def process_item(self, item, spider):
+        pass
+
+    def close_spider(self, spider):
+        pass
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            connection_string=crawler.settings.get("CONNECTION_STRING"),
         )
