@@ -6,6 +6,7 @@ from databox.fenbi.fenbi_paper_list_spider import FenbiPaperListSpider
 from databox.fenbi.fenbi_paper_spider import FenbiPaperSpider
 from databox.github.github_repo_search_spider import GithubRepoSearchSpider
 from databox.github.github_repo_spider import GithubRepoSpider
+from databox.idiom.idiom_spider import IdiomSpider
 
 if __name__ == '__main__':
     install_reactor('twisted.internet.asyncioreactor.AsyncioSelectorReactor')
@@ -17,9 +18,5 @@ if __name__ == '__main__':
     #                   'https://github.com/wong2/awesome-mcp-servers',
     #                   'https://github.com/modelcontextprotocol/servers'
     #               ], match_words=['mcp', 'modelcontextprotocol'])
-    fenbi_cookies = {
-        'persistent': ''
-    }
-    process.crawl(FenbiPaperListSpider, allow_label_ids=[1])
-    process.crawl(FenbiPaperSpider)
+    # process.crawl(FenbiPaperListSpider, allow_label_ids=[1])
     process.start()
