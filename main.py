@@ -19,4 +19,5 @@ if __name__ == '__main__':
     #                   'https://github.com/modelcontextprotocol/servers'
     #               ], match_words=['mcp', 'modelcontextprotocol'])
     # process.crawl(FenbiPaperListSpider, allow_label_ids=[1])
+    process.crawl(IdiomSpider, words="寥若晨星")
     process.start()
