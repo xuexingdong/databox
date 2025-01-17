@@ -17,6 +17,12 @@ class IdiomSpider(Spider):
         '中性成语': IdiomEmotion.NEUTRAL,
     }
 
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'databox.idiom.pipelines.IdiomPipeline': 300,
+        }
+    }
+
     def __init__(self, words, *args, **kwargs):
         super(IdiomSpider, self).__init__(*args, **kwargs)
         self.words = words
