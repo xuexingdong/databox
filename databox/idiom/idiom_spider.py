@@ -1,7 +1,6 @@
 from typing import Any
 from urllib.parse import quote
 
-import arrow
 from scrapy import Spider
 from scrapy.http import Response
 
