@@ -24,5 +24,3 @@ class IdiomItem(scrapy.Item):
     explanation = scrapy.Field()
     # 例句（列表）
     example_sentences = scrapy.Field()
-    # 最后更新时间
-    last_update_time = scrapy.Field()

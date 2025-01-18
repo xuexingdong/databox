@@ -55,7 +55,6 @@ class IdiomSpider(Spider):
                 # 排除另外一个名为“例句”的信息
                 if not sub_detail.css('table.compare'):
                     idiom_item['example_sentences'] = sub_detail.css('p.note').xpath('string(.)').getall()
-        idiom_item['last_update_time'] = arrow.now().format('YYYY-MM-DD HH:mm:ss')
         return idiom_item
 
     @staticmethod
