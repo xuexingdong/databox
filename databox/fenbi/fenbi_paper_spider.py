@@ -13,6 +13,7 @@ class FenbiPaperSpider(RedisSpider):
     redis_key = "databox:" + name
 
     custom_settings = {
+        'MAX_IDLE_TIME_BEFORE_CLOSE': 60,
         'CONCURRENT_REQUESTS': 2,
         'ITEM_PIPELINES': {
             'databox.fenbi.pipelines.PaperPipeline': 800,
