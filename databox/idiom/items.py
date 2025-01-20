@@ -8,6 +8,10 @@ class IdiomItem(scrapy.Item):
     pinyin = scrapy.Field()
     # 感情色彩
     emotion = scrapy.Field()
+    # 近义词
+    synonyms = scrapy.Field()
+    # 反义词
+    antonyms = scrapy.Field()
     # 意思
     meaning = scrapy.Field()
     # 出处

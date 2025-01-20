@@ -37,6 +37,8 @@ class IdiomSpider(Spider):
 
         ci_attrs = ci_main.css('.ci-attrs')
         idiom_item['emotion'] = self.emotion_map.get(self.find_ci_attr_value(ci_attrs, '感情'))
+        idiom_item['synonyms'] = self.find_ci_attr_values(ci_attrs, '近义词')
+        idiom_item['antonyms'] = self.find_ci_attr_values(ci_attrs, '反义词')
 
         explain = ci_main.css('#explain')
         idiom_item['meaning'] = '\n'.join(explain.css('.primary::text').getall())
@@ -59,6 +61,10 @@ class IdiomSpider(Spider):
     @staticmethod
     def find_ci_attr_value(ci_attrs, field_name):
         return ci_attrs.css(f'p > span:contains({field_name}) + a::text').get()
+
+    @staticmethod
+    def find_ci_attr_values(ci_attrs, field_name):
+        return ci_attrs.css(f'p > span:contains({field_name}) ~ a::text').getall()
 
     @staticmethod
     def find_explain_value(explain, field_name):

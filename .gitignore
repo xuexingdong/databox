@@ -1,7 +1,6 @@
 .idea
 Pipfile.lock
 chromedriver
-main.py
 data
 __pycache__
 userdata

@@ -64,7 +64,7 @@ class FenbiPaperListSpider(RedisSpider):
             if self.allow_label_ids is None or label['id'] in self.allow_label_ids:
                 yield Request(
                     self.get_paper_list_url(label['prefix'], label['id']),
-                    callback=self.parse_paper_list, cookies=cookies,
+                    callback=self.parse_paper_list, cookies=self.cookies,
                     meta={
                         'prefix': label['prefix'],
                         'label_id': label['id'],

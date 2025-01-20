@@ -1,9 +1,23 @@
 import json
 
+import httpx
 from sqlalchemy.orm import Session
 
 from databox.fenbi.model.models import Paper, Material, Question
 from databox.pipelines import DBPipeline
+
+
+class PaperPipeline:
+    url = 'http://localhost:8081/land/papers/add'
+
+    def __init__(self):
+        self.client = httpx.Client(verify=False, timeout=300)
+
+    def process_item(self, item, spider):
+        r = self.client.post(self.url, json=dict(item))
+
+    def close_spider(self, spider):
+        self.client.close()
 
 
 class QuestionPipeline(DBPipeline):
