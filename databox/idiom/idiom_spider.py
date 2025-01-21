@@ -4,10 +4,10 @@ from urllib.parse import quote
 
 from scrapy import Request
 from scrapy.http import Response
+from scrapy_redis.spiders import RedisSpider
 
 from databox.idiom.enums import IdiomEmotion
 from databox.idiom.items import IdiomItem
-from scrapy_redis.spiders import RedisSpider
 
 
 class IdiomSpider(RedisSpider):
@@ -25,27 +25,29 @@ class IdiomSpider(RedisSpider):
         }
     }
 
-    def __init__(self, words, *args, **kwargs):
+    def __init__(self, word, *args, **kwargs):
         super(IdiomSpider, self).__init__(*args, **kwargs)
-        self.words = words
-        self.start_urls = [f'https://www.hanyuguoxue.com/chengyu/search?words={quote(words)}']
+        self.start_urls = [f'https://www.hanyuguoxue.com/chengyu/search?words={quote(word)}']
 
     def make_request_from_data(self, data):
         data = json.loads(data)
-        prefix = data['prefix']
-
+        question_id = data['question_id']
+        word = data['word']
         if data['exercise_id']:
-            yield Request(f"https://tiku.fenbi.com/api/{prefix}/exercises/{data['exercise_id']}",
-                          cookies=self.cookies,
-                          meta={'prefix': prefix}, dont_filter=True)
+            yield Request(f'https://www.hanyuguoxue.com/chengyu/search?words={quote(word)}',
+                          meta={
+                              'word': word,
+                              'question_id': question_id
+                          })
 
     def parse(self, response: Response, **kwargs: Any) -> Any:
         ci_main = response.css('.ci-main')
         if not ci_main:
             # 不是成语
             return
+        word = response.meta['word']
         idiom_item = IdiomItem()
-        idiom_item['word'] = self.words
+        idiom_item['word'] = word
         idiom_item['pinyin'] = ' '.join(ci_main.css('.pinyin > span::text').getall())
 
         ci_attrs = ci_main.css('.ci-attrs')
@@ -69,6 +71,7 @@ class IdiomSpider(RedisSpider):
                 # 排除另外一个名为“例句”的信息
                 if not sub_detail.css('table.compare'):
                     idiom_item['example_sentences'] = sub_detail.css('p.note').xpath('string(.)').getall()
+        idiom_item['question_id'] = response.meta['question_id']
         return idiom_item
 
     @staticmethod

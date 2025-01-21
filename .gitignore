@@ -1,5 +1,4 @@
 .idea
-Pipfile.lock
 chromedriver
 main.py
 data
@@ -8,4 +7,3 @@ userdata
 /*.db
 .DS_Store
 poetry.lock
-build/

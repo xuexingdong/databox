@@ -28,3 +28,5 @@ class IdiomItem(scrapy.Item):
     explanation = scrapy.Field()
     # 例句（列表）
     example_sentences = scrapy.Field()
+
+    question_id = scrapy.Field()
