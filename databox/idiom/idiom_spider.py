@@ -25,20 +25,20 @@ class IdiomSpider(RedisSpider):
         }
     }
 
-    def __init__(self, word, *args, **kwargs):
+    def __init__(self, word=None, *args, **kwargs):
         super(IdiomSpider, self).__init__(*args, **kwargs)
-        self.start_urls = [f'https://www.hanyuguoxue.com/chengyu/search?words={quote(word)}']
+        if word:
+            self.start_urls = [f'https://www.hanyuguoxue.com/chengyu/search?words={quote(word)}']
 
     def make_request_from_data(self, data):
         data = json.loads(data)
         question_id = data['question_id']
         word = data['word']
-        if data['exercise_id']:
-            yield Request(f'https://www.hanyuguoxue.com/chengyu/search?words={quote(word)}',
-                          meta={
-                              'word': word,
-                              'question_id': question_id
-                          })
+        yield Request(f'https://www.hanyuguoxue.com/chengyu/search?words={quote(word)}',
+                      meta={
+                          'word': word,
+                          'question_id': question_id
+                      }, dont_filter=True)
 
     def parse(self, response: Response, **kwargs: Any) -> Any:
         ci_main = response.css('.ci-main')
