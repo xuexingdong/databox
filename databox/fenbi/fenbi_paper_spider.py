@@ -34,13 +34,13 @@ class FenbiPaperSpider(RedisSpider):
                                  cookies=self.cookies,
                                  meta={'prefix': prefix}, dont_filter=True)
         else:
-            formdata = {
-                'type': '1',
-                'paperId': str(data['paper_id']),
-                'exerciseTimeMode': '2'
-            }
             yield scrapy.FormRequest(f"https://tiku.fenbi.com/api/{prefix}/exercises",
-                                     formdata=formdata, cookies=self.cookies,
+                                     formdata={
+                                         'type': '1',
+                                         'paperId': str(data['paper_id']),
+                                         'exerciseTimeMode': '2'
+                                     },
+                                     cookies=self.cookies,
                                      meta={'prefix': prefix}, dont_filter=True)
 
     def parse(self, response: Response, **kwargs: Any) -> Any:
