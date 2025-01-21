@@ -2,7 +2,7 @@ import json
 import time
 
 from scrapy import Request
-from databox.redis_spider import RedisSpider
+from scrapy_redis.spiders import RedisSpider
 
 from databox.petchain.item_loaders import PetLoader
 from databox.petchain.items import PetItem

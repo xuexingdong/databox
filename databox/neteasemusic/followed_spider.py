@@ -1,7 +1,7 @@
 import json
 
 from scrapy import FormRequest
-from databox.redis_spider import RedisSpider
+from scrapy_redis.spiders import RedisSpider
 from scrapy_redis.utils import bytes_to_str
 
 from databox.neteasemusic import apis, utils

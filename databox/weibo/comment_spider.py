@@ -3,7 +3,7 @@ from typing import Any
 from urllib.parse import parse_qs, urlparse
 
 from scrapy.http import TextResponse
-from databox.redis_spider import RedisSpider
+from scrapy_redis.spiders import RedisSpider
 from databox.weibo.constants import PREFIX
 from databox.weibo.enums import CommentFlow
 

@@ -1,15 +1,18 @@
+import json
 from typing import Any
 from urllib.parse import quote
 
-from scrapy import Spider
+from scrapy import Request
 from scrapy.http import Response
 
 from databox.idiom.enums import IdiomEmotion
 from databox.idiom.items import IdiomItem
+from scrapy_redis.spiders import RedisSpider
 
 
-class IdiomSpider(Spider):
+class IdiomSpider(RedisSpider):
     name = 'idiom'
+    redis_key = "databox:" + name
     emotion_map = {
         '褒义成语': IdiomEmotion.POSITIVE.value,
         '贬义成语': IdiomEmotion.NEGATIVE.value,
@@ -27,9 +30,19 @@ class IdiomSpider(Spider):
         self.words = words
         self.start_urls = [f'https://www.hanyuguoxue.com/chengyu/search?words={quote(words)}']
 
+    def make_request_from_data(self, data):
+        data = json.loads(data)
+        prefix = data['prefix']
+
+        if data['exercise_id']:
+            yield Request(f"https://tiku.fenbi.com/api/{prefix}/exercises/{data['exercise_id']}",
+                          cookies=self.cookies,
+                          meta={'prefix': prefix}, dont_filter=True)
+
     def parse(self, response: Response, **kwargs: Any) -> Any:
         ci_main = response.css('.ci-main')
         if not ci_main:
+            # 不是成语
             return
         idiom_item = IdiomItem()
         idiom_item['word'] = self.words

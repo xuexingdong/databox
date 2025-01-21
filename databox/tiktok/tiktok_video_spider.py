@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from scrapy.http import Response
 
-from databox.redis_spider import RedisSpider
+from scrapy_redis.spiders import RedisSpider
 from databox.tiktok.items import TiktokVideo
 
 

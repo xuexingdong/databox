@@ -2,7 +2,7 @@ from typing import Iterable, Any
 
 from scrapy import Request
 from scrapy.http import TextResponse
-from databox.redis_spider import RedisSpider
+from scrapy_redis.spiders import RedisSpider
 
 from databox.weibo import constants
 from databox.weibo.items import Profile

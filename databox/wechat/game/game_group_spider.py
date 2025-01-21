@@ -2,7 +2,7 @@ import json
 
 from scrapy import Request
 from scrapy.http import Response
-from databox.redis_spider import RedisSpider
+from scrapy_redis.spiders import RedisSpider
 
 from databox.wechat.game.items import TopicItem
 from databox.wechat.game.reply_spider import ReplySpider

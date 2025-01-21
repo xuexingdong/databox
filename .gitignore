@@ -8,3 +8,4 @@ userdata
 /*.db
 .DS_Store
 poetry.lock
+build/

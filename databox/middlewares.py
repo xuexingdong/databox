@@ -3,7 +3,7 @@ import json
 from redis import StrictRedis
 from scrapy import Request
 from scrapy_redis import get_redis
-from databox.redis_spider import RedisSpider
+from scrapy_redis.spiders import RedisSpider
 
 
 class CookieMiddleware:

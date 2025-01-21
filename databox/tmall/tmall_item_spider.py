@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 
 from scrapy import Request
 from scrapy.http import Response
-from databox.redis_spider import RedisSpider
+from scrapy_redis.spiders import RedisSpider
 
 from databox.tmall.item_loaders import TmallItemLoader, TmallSkuLoader
 from databox.tmall.tmall_rate_spider import TmallRateSpider
