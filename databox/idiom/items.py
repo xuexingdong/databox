@@ -29,4 +29,4 @@ class IdiomItem(scrapy.Item):
     # 例句（列表）
     example_sentences = scrapy.Field()
 
-    question_id = scrapy.Field()
+    question_ids = scrapy.Field()

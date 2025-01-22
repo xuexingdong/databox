@@ -33,11 +33,11 @@ class IdiomSpider(RedisSpider):
     def make_request_from_data(self, data):
         data = json.loads(data)
         word = data['word']
-        question_id = data.get('question_id')
+        question_ids = data.get('question_ids')
         yield Request(f'https://www.hanyuguoxue.com/chengyu/search?words={quote(word)}',
                       meta={
                           'word': word,
-                          'question_id': question_id
+                          'question_ids': question_ids
                       }, dont_filter=True)
 
     def parse(self, response: Response, **kwargs: Any) -> Any:
@@ -71,7 +71,7 @@ class IdiomSpider(RedisSpider):
                 # 排除另外一个名为“例句”的信息
                 if not sub_detail.css('table.compare'):
                     idiom_item['example_sentences'] = sub_detail.css('p.note').xpath('string(.)').getall()
-        idiom_item['question_id'] = response.meta['question_id']
+        idiom_item['question_ids'] = response.meta['question_ids']
         return idiom_item
 
     @staticmethod
