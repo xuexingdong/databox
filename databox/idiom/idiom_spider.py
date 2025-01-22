@@ -22,7 +22,7 @@ class IdiomSpider(RedisSpider):
     custom_settings = {
         'ITEM_PIPELINES': {
             'databox.idiom.pipelines.IdiomPipeline': 300,
-        }
+        },
     }
 
     def __init__(self, word=None, *args, **kwargs):
@@ -32,8 +32,8 @@ class IdiomSpider(RedisSpider):
 
     def make_request_from_data(self, data):
         data = json.loads(data)
-        question_id = data['question_id']
         word = data['word']
+        question_id = data.get('question_id')
         yield Request(f'https://www.hanyuguoxue.com/chengyu/search?words={quote(word)}',
                       meta={
                           'word': word,
