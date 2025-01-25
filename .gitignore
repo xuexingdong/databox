@@ -5,7 +5,6 @@ __pycache__
 .venv
 .secrets
 .env
-poetry.lock
 logs
 /*.db
 main.py
