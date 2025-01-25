@@ -20,7 +20,7 @@ jobs:
           overwrite: true
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@1.2.0
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
