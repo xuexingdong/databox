@@ -1,4 +1,5 @@
 import logging
+import os
 
 ROBOTSTXT_OBEY = False
 
@@ -20,15 +21,12 @@ USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
 SCHEDULER_PERSIST = True
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
-REDIS_URL = 'redis://localhost:6379/0'
 
 # DOWNLOAD_FAIL_ON_DATALOSS = False
 
 # mongo
 MONGO_URI = '127.0.0.1:27017'
 MONGO_DATABASE = 'databox'
-
-CONNECTION_STRING = "mysql+pymysql://root:123456789@localhost:3306/databox"
 
 # LOG_FILE = 'data/log.txt'
 LOG_LEVEL = logging.INFO
@@ -41,3 +39,4 @@ PLAYWRIGHT_LAUNCH_OPTIONS = {
     "headless": False,
     "timeout": 30 * 1000
 }
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')

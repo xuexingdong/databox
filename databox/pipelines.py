@@ -1,7 +1,26 @@
 import abc
-
 import pymongo
-from sqlalchemy import create_engine
+import httpx
+
+
+class HttpPipeline(abc.ABC):
+    def __init__(self, x_api):
+        self.client = httpx.Client(verify=False, timeout=300)
+        self.url = x_api + self.get_path()
+
+    @abc.abstractmethod
+    def get_path(self):
+        pass
+
+    def process_item(self, item, spider):
+        r = self.client.post(self.url, json=dict(item))
+
+    def close_spider(self, spider):
+        self.client.close()
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(x_api=crawler.settings.get('X_API'))
 
 
 class MongoPipeline(abc.ABC):
@@ -27,31 +46,4 @@ class MongoPipeline(abc.ABC):
         return cls(
             mongo_uri=crawler.settings.get('MONGO_URI'),
             mongo_db=crawler.settings.get('MONGO_DATABASE')
-        )
-
-
-class DBPipeline(abc.ABC):
-    engine = None
-
-    def __init__(self, connection_string):
-        self.connection_string = connection_string
-
-    def open_spider(self, spider):
-        """
-        Initializes database connection and sessionmaker.
-        Creates items table.
-        """
-        self.engine = create_engine(self.connection_string)
-
-    @abc.abstractmethod
-    def process_item(self, item, spider):
-        pass
-
-    def close_spider(self, spider):
-        pass
-
-    @classmethod
-    def from_crawler(cls, crawler):
-        return cls(
-            connection_string=crawler.settings.get("CONNECTION_STRING"),
         )

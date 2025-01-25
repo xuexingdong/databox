@@ -1,9 +1,11 @@
 .idea
-chromedriver
 main.py
 data
 __pycache__
 userdata
 /*.db
 .DS_Store
+.poetry
 poetry.lock
+.secrets
+.env
