@@ -5,6 +5,7 @@ __pycache__
 .venv
 .secrets
 .env
+poetry.toml
 logs
 /*.db
 main.py

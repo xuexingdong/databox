@@ -7,15 +7,15 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN groupadd -r appuser && \
     useradd -r -g appuser appuser
 
+RUN pip install poetry
+
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock ./
+COPY --chown=appuser:appuser pyproject.toml poetry.lock ./
 
 # 使用 Poetry 安装依赖
 RUN poetry install --no-dev --no-interaction --no-ansi && \
     poetry cache clear pypi --all
-
-RUN pip install poetry
 
 COPY --chown=appuser:appuser . .
 
