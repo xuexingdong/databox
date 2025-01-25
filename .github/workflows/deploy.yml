@@ -28,7 +28,6 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           source: "."
           target: ${{ secrets.DEPLOY_PATH }}
-          strip_components: 1
           overwrite: true
 
       - name: Deploy to server
