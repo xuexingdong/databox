@@ -1,11 +1,11 @@
 .idea
-main.py
 __pycache__
-userdata
-/*.db
 .DS_Store
 .poetry
-poetry.lock
+.venv
 .secrets
 .env
+poetry.lock
 logs
+/*.db
+main.py
