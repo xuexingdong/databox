@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 WORKDIR /app
 COPY . /app
 
-CMD ["scrapy", "crawl", "land"]
+CMD ["scrapy", "crawl", "land", "-s", "LOG_LEVEL=ERROR"]

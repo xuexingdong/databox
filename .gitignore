@@ -1,6 +1,5 @@
 .idea
 main.py
-data
 __pycache__
 userdata
 /*.db
@@ -9,3 +8,4 @@ userdata
 poetry.lock
 .secrets
 .env
+logs
