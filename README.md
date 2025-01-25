@@ -3,5 +3,5 @@
 1. install dependencies
 
 ```shell
-pipenv install
+poetry install
 ```
