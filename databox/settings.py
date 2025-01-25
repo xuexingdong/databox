@@ -40,3 +40,4 @@ PLAYWRIGHT_LAUNCH_OPTIONS = {
     "timeout": 30 * 1000
 }
 REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+X_API = os.getenv('X_API', 'http://localhost:8081')

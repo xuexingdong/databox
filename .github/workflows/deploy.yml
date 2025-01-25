@@ -51,6 +51,7 @@ jobs:
             docker run -d \
               --name databox \
               -e "REDIS_URL=${{ secrets.REDIS_URL }}" \
+              -e "X_API=${{ secrets.X_API }}" \
               -v ${{ secrets.DEPLOY_PATH }}/config:/app/config \
               -v ${{ secrets.DEPLOY_PATH }}/logs:/app/logs \
               databox:latest
