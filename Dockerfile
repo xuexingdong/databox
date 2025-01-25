@@ -9,9 +9,13 @@ RUN groupadd -r appuser && \
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && \
-    rm -rf /root/.cache/pip/*
+COPY pyproject.toml poetry.lock ./
+
+# 使用 Poetry 安装依赖
+RUN poetry install --no-dev --no-interaction --no-ansi && \
+    poetry cache clear pypi --all
+
+RUN pip install poetry
 
 COPY --chown=appuser:appuser . .
 
