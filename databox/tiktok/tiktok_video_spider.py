@@ -3,8 +3,8 @@ from typing import Any
 from urllib.parse import urlparse
 
 from scrapy.http import Response
-
 from scrapy_redis.spiders import RedisSpider
+
 from databox.tiktok.items import TiktokVideo
 
 

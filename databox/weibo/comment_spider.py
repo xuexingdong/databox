@@ -4,9 +4,9 @@ from urllib.parse import parse_qs, urlparse
 
 from scrapy.http import TextResponse
 from scrapy_redis.spiders import RedisSpider
+
 from databox.weibo.constants import PREFIX
 from databox.weibo.enums import CommentFlow
-
 from databox.weibo.items import CommentItem
 
 

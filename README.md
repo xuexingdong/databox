@@ -3,5 +3,5 @@
 1. install dependencies
 
 ```shell
-poetry install
+uv pip install -r requirements.txt
 ```

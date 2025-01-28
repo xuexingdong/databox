@@ -28,7 +28,7 @@ DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 MONGO_URI = '127.0.0.1:27017'
 MONGO_DATABASE = 'databox'
 
-LOG_FILE = 'logs/log.txt'
+# LOG_FILE = 'logs/log.txt'
 LOG_LEVEL = logging.INFO
 
 # 驱动路径

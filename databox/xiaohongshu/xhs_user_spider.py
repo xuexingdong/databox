@@ -4,8 +4,8 @@ from typing import Iterable, Any
 
 from scrapy import Request
 from scrapy.http import Response
-
 from scrapy_redis.spiders import RedisSpider
+
 from databox.xiaohongshu.items import User
 
 

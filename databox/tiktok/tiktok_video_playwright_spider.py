@@ -5,8 +5,8 @@ from playwright.async_api import expect
 from playwright_stealth import stealth_async
 from scrapy import Request
 from scrapy.http import Response
-
 from scrapy_redis.spiders import RedisSpider
+
 from databox.tiktok.tiktok_video_spider import TiktokVideoSpider
 
 
