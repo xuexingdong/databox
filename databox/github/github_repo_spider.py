@@ -13,7 +13,7 @@ class GithubRepoSpider(RedisSpider):
     name = 'github_repo'
     redis_key = "databox:" + name
     custom_settings = {
-        'MAX_IDLE_TIME_BEFORE_CLOSE': 60,
+        'MAX_IDLE_TIME_BEFORE_CLOSE': 30,
         'CONCURRENT_REQUESTS': 1,
         'CONCURRENT_REQUESTS_PER_IP': 2,
         'ITEM_PIPELINES': {

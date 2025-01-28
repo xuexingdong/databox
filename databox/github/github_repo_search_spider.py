@@ -13,7 +13,7 @@ class GithubRepoSearchSpider(RedisSpider):
     name = 'github_repo_search'
     redis_key = "databox:" + name
     custom_settings = {
-        'MAX_IDLE_TIME_BEFORE_CLOSE': 60,
+        'MAX_IDLE_TIME_BEFORE_CLOSE': 30,
         'CONCURRENT_REQUESTS': 1,
         'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
         'CONCURRENT_REQUESTS_PER_IP': 1,
@@ -32,6 +32,9 @@ class GithubRepoSearchSpider(RedisSpider):
         super(GithubRepoSearchSpider, self).__init__(*args, **kwargs)
         self.q = q
         self.p = int(p)
+
+        if updated_after is None:
+            updated_after = arrow.now().shift(days=-1).format("YYYY-MM-DD")
         self.updated_after = arrow.get(updated_after, "YYYY-MM-DD")
 
     def start_requests(self):
