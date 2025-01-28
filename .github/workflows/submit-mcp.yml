@@ -22,4 +22,4 @@ jobs:
 
       - name: Run Scrapy crawlers
         run: |
-          python databox/github/submit_mcp.py
+          python -m databox.github.submit_mcp
