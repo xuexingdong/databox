@@ -2,7 +2,7 @@ import abc
 import asyncio
 import ssl
 
-import aiohttp
+import httpx
 
 
 class DanmuClient(abc.ABC):
