@@ -13,6 +13,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
@@ -21,4 +22,4 @@ jobs:
 
       - name: Run Scrapy crawlers
         run: |
-          python databox/github/main.py
+          python databox/github/submit-mcp.py
