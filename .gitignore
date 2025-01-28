@@ -1,8 +1,18 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
 .idea
 __pycache__
 .DS_Store
 .poetry
-.venv
 .secrets
 .env
 poetry.toml
