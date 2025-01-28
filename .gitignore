@@ -10,12 +10,9 @@ wheels/
 .venv
 
 .idea
-__pycache__
 .DS_Store
-.poetry
 .secrets
 .env
-poetry.toml
 logs
 /*.db
 main.py
