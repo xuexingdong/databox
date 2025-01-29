@@ -21,7 +21,7 @@ class XiaohongshuUserSpider(RedisSpider):
             'databox.xiaohongshu.pipelines.UserPipeline': 800,
         }
     }
-    PATTERN = re.compile('(?<=window\.__INITIAL_STATE__=)(.*)(?=</script>)')
+    PATTERN = re.compile(r'(?<=window\.__INITIAL_STATE__=)(.*)(?=</script>)')
 
     def __init__(self, profile_str=None, xhs_no=None, *args, **kwargs):
         super(XiaohongshuUserSpider, self).__init__(*args, **kwargs)
