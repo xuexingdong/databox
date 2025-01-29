@@ -33,7 +33,7 @@ jobs:
             docker rm databox || true
 
             # 构建新镜像
-            docker build -t databox:latest .
+            docker build -t databox .
 
             # 启动新容器
             docker run -d \
@@ -41,7 +41,7 @@ jobs:
               -e "REDIS_URL=${{ secrets.REDIS_URL }}" \
               -e "X_API=${{ secrets.X_API }}" \
               -v ${{ secrets.DEPLOY_PATH }}/logs:/app/logs \
-              databox:latest
+              databox
 
             # 清理
             docker image prune -f &
