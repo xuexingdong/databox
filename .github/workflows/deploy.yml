@@ -28,6 +28,7 @@ jobs:
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
 
+            chmod -R 777 logs
             # 停止并删除旧容器
             docker stop databox || true
             docker rm databox || true
