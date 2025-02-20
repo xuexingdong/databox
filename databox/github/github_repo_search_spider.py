@@ -13,11 +13,15 @@ class GithubRepoSearchSpider(RedisSpider):
     name = 'github_repo_search'
     redis_key = "databox:" + name
     custom_settings = {
-        'MAX_IDLE_TIME_BEFORE_CLOSE': 30,
+        'MAX_IDLE_TIME_BEFORE_CLOSE': 60 * 5,
         'CONCURRENT_REQUESTS': 1,
         'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
         'CONCURRENT_REQUESTS_PER_IP': 1,
-        'DOWNLOAD_DELAY': 15,
+        'DOWNLOAD_DELAY': 60,
+        'RANDOMIZE_DOWNLOAD_DELAY': True,
+        'AUTOTHROTTLE_ENABLED': True,
+        'RETRY_TIMES': 3,
+        'RETRY_HTTP_CODES': [429],
     }
 
     def __init__(self, q=None, p=1, updated_after=None, *args, **kwargs):
@@ -42,6 +46,7 @@ class GithubRepoSearchSpider(RedisSpider):
         self.logger.info(url)
         headers = {
             'Accept': 'application/json',
+            'Referer': 'https://github.com/'
         }
         yield scrapy.Request(url, headers=headers, dont_filter=True)
 

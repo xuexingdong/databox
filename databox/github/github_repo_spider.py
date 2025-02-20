@@ -13,12 +13,13 @@ class GithubRepoSpider(RedisSpider):
     name = 'github_repo'
     redis_key = "databox:" + name
     custom_settings = {
-        'MAX_IDLE_TIME_BEFORE_CLOSE': 30,
+        'MAX_IDLE_TIME_BEFORE_CLOSE': 60 * 5,
         'CONCURRENT_REQUESTS': 1,
-        'CONCURRENT_REQUESTS_PER_IP': 2,
+        'CONCURRENT_REQUESTS_PER_IP': 1,
         'ITEM_PIPELINES': {
             'databox.github.pipelines.SubmitMcpPipeline': 800,
-        }
+        },
+        'DOWNLOAD_DELAY': 5,
     }
 
     def __init__(self, url=None, match_repos=None, match_words=None, *args, **kwargs):
@@ -44,7 +45,7 @@ class GithubRepoSpider(RedisSpider):
                 all_links = markdown_body.css("a::attr(href)").getall()
                 for link in all_links:
                     if self.is_github_repo(link) and any(word in link for word in self.match_words):
-                        yield Request(link)
+                        yield Request(link, dont_filter=True)
         else:
             embedded_data = json.loads(embedded_data_json)
             repo_data = embedded_data['props']['initialPayload']['repo']
@@ -77,7 +78,8 @@ class GithubRepoSpider(RedisSpider):
             yield Request(
                 url=readme_url,
                 callback=self.parse_readme,
-                meta={'repo': repo}  # 传递 repo_item
+                meta={'repo': repo},
+                dont_filter=True
             )
 
     def parse_readme(self, response: Response, **kwargs: Any) -> Any:
