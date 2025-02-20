@@ -57,7 +57,7 @@ class GithubRepoSearchSpider(RedisSpider):
             return
         for repo in repos:
             if arrow.get(repo['updated_at']) < self.updated_after:
-                self.logger.error('find repo updated at %s, finish', repo['updated_at'])
+                self.logger.info('find repo updated at %s, finish', repo['updated_at'])
                 return
             repo_url = f'https://github.com/{repo["owner_login"]}/{repo["name"]}'
             self.server.rpush(GithubRepoSpider.redis_key, json.dumps({
