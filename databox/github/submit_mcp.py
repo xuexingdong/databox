@@ -7,7 +7,7 @@ from databox.github.github_repo_spider import GithubRepoSpider
 
 def run_spiders():
     process = CrawlerProcess(get_project_settings())
-    process.crawl(GithubRepoSearchSpider, q='mcp-server', updated_after='2025-02-20')
+    process.crawl(GithubRepoSearchSpider, q='mcp-server', updated_after='2025-02-22')
     process.crawl(GithubRepoSpider,
                   match_repos=[
                       'https://github.com/punkpeye/awesome-mcp-servers',

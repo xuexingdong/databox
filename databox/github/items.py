@@ -12,3 +12,8 @@ class Repo(Item):
     url = Field()
     content = Field()
     img_url = Field()
+    star = Field()
+    license = Field()
+    language = Field()
+    official = Field()
+    latest_commit_time = Field()
