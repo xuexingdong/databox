@@ -9,7 +9,7 @@ from databox.pulsemcp.pulsemcp_mcp_client import PulseMcpMcpClient
 def run_spiders():
     process = CrawlerProcess(get_project_settings())
     process.crawl(PulseMcpMcpClient)
-    process.crawl(GithubRepoSearchSpider, q='mcp-server', updated_after='2025-02-22')
+    process.crawl(GithubRepoSearchSpider, q='mcp-server', updated_after='2025-02-23')
     process.crawl(GithubRepoSpider,
                   match_repos=[
                       'https://github.com/punkpeye/awesome-mcp-servers',
