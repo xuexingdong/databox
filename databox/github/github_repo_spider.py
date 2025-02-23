@@ -70,6 +70,8 @@ class GithubRepoSpider(RedisSpider):
                     img_url = response.urljoin(img_url)
             repo = Repo()
             repo['name'] = repo_data['name']
+            if response.meta and 'category' in response.meta:
+                repo['category'] = response.meta['category']
             repo['title'] = title
             repo['description'] = description
             repo['avatar_url'] = repo_data['ownerAvatar'].strip()
