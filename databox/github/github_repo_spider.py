@@ -54,7 +54,7 @@ class GithubRepoSpider(RedisSpider):
         else:
             embedded_data = json.loads(embedded_data_json)
             repo_data = embedded_data['props']['initialPayload']['repo']
-            star = response.css('#repo-stars-counter-star::attr(title)').get()
+            star = response.css('#repo-stars-counter-star::attr(title)').get(default='').replace(',', '')
             sidebar = response.css('.Layout-sidebar')
             description = sidebar.css('p.f4::text').get(default='').strip()
             tags = sidebar.css('div.f6 > a.topic-tag::text').getall()
@@ -68,10 +68,14 @@ class GithubRepoSpider(RedisSpider):
                 img_url = markdown_body.css('img::attr(src)').get()
                 if img_url:
                     img_url = response.urljoin(img_url)
+            readme_content = await self.get_readme_content(repo_data)
+            if not readme_content:
+                self.logger.warning('no readme, drop item, %s', response.url)
+                return
             repo = Repo()
             repo['name'] = repo_data['name']
-            if response.meta and 'category' in response.meta:
-                repo['category'] = response.meta['category']
+            if response.meta and 'type' in response.meta:
+                repo['type'] = response.meta['type']
             repo['title'] = title
             repo['description'] = description
             repo['avatar_url'] = repo_data['ownerAvatar'].strip()
@@ -80,12 +84,16 @@ class GithubRepoSpider(RedisSpider):
             repo['tags'] = tags
             repo['url'] = response.url
             repo['img_url'] = img_url
-            repo['star'] = star
-            repo['license'] = license_text
-            repo['language'] = main_language
-            repo['official'] = self.is_official_repo(response.url)
-            repo['content'] = await self.get_readme_content(repo_data)
-            repo['latest_commit_time'] = await self.get_latest_commit_time(repo_data)
+            metadata = {
+                'star': star,
+                'license': license_text,
+                'language': main_language,
+                'is_official': self.is_official_repo(response.url),
+                'latest_commit_time': await self.get_latest_commit_time(repo_data)
+            }
+            repo['metadata'] = metadata
+            repo['content'] = readme_content
+
             yield repo
 
     async def get_readme_content(self, repo_data):
@@ -97,8 +105,7 @@ class GithubRepoSpider(RedisSpider):
         )
         deferred = self.crawler.engine.download(readme_request)
         readme_response = await maybe_deferred_to_future(deferred)
-        readme_content = self.parse_readme(readme_response)
-        return readme_content
+        return self.parse_readme(readme_response)
 
     @staticmethod
     def get_readme_url(author_name, name, branch):
@@ -106,12 +113,9 @@ class GithubRepoSpider(RedisSpider):
 
     def parse_readme(self, response: Response):
         if response.status == 404:
-            self.logger.warning('no readme, drop item, %s', response.url)
-            return
-        # 获取传递的 Repo item
-        if '404: Not Found' in response.text:
-            self.logger.warning('no readme, drop item, %s', response.url)
-            return
+            return ''
+        if '404: Not Found' == response.text:
+            return ''
         return response.text.strip()
 
     async def get_latest_commit_time(self, repo_data):

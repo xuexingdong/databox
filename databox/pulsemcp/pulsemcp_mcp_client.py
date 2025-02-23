@@ -33,7 +33,7 @@ class PulseMcpMcpClient(RedisSpider):
         self.server.rpush(GithubRepoSpider.redis_key, json.dumps({
             'url': repo_url,
             'meta': {
-                'category': 'client'
+                'type': 'client'
             }
         }))
 

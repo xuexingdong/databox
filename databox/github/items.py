@@ -3,7 +3,7 @@ from scrapy import Item, Field
 
 class Repo(Item):
     name = Field()
-    category = Field()
+    type = Field()
     title = Field()
     description = Field()
     avatar_url = Field()
@@ -13,8 +13,4 @@ class Repo(Item):
     url = Field()
     content = Field()
     img_url = Field()
-    star = Field()
-    license = Field()
-    language = Field()
-    official = Field()
-    latest_commit_time = Field()
+    metadata = Field()
