@@ -40,7 +40,7 @@ class GithubRepoSpider(RedisSpider):
     async def parse(self, response: Response, **kwargs: Any) -> Any:
         embedded_data_json = response.css('react-partial[partial-name=repos-overview] script::text').get()
         if not embedded_data_json:
-            self.logger.error("empty repo, %s", response.url)
+            self.logger.warning("empty repo, %s", response.url)
             return
         # TODO 空repo去除
         markdown_body = response.css('article.markdown-body')
