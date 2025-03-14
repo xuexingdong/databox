@@ -7,4 +7,4 @@ def decode_qrcode_img_url(img_url: str) -> Optional[str]:
     # if res['status'] != 1:
     #     return ''
     # return res['data']['RawData']
-    return None;
+    return None

@@ -15,6 +15,7 @@ from .items import TmallItem, TmallSkuItem
 class TmallItemSpider(RedisSpider):
     name = 'tmall_item'
     redis_key = "databox:" + name
+    redis_batch_size = 64
 
     custom_settings = {
         'ITEM_PIPELINES':         {
@@ -24,7 +25,6 @@ class TmallItemSpider(RedisSpider):
         'DOWNLOADER_MIDDLEWARES': {
             'databox.tmall.middlewares.TmallCookiesMiddleware': 543
         },
-        'CONCURRENT_REQUESTS':    64,
         'RETRY_TIMES':            10
     }
 

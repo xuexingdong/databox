@@ -18,9 +18,7 @@ class FenbiPaperListSpider(RedisSpider):
     js_8_regex = r'(?<=8:")\w+?(?=")'
     x_regex = r'const x=.+?(?=var M=)'
 
-    custom_settings = {
-        'MAX_IDLE_TIME_BEFORE_CLOSE': 60
-    }
+    max_idle_time = 60
 
     def __init__(self, allow_label_ids=None, cookies=None, *args, **kwargs):
         super(FenbiPaperListSpider, self).__init__(*args, **kwargs)

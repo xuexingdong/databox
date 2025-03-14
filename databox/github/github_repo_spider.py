@@ -17,9 +17,9 @@ from databox.github.items import Repo
 class GithubRepoSpider(RedisSpider):
     name = 'github_repo'
     redis_key = "databox:" + name
+    redis_batch_size = 1
+    max_idle_time = 60 * 5
     custom_settings = {
-        'MAX_IDLE_TIME_BEFORE_CLOSE': 60 * 5,
-        'CONCURRENT_REQUESTS': 1,
         'CONCURRENT_REQUESTS_PER_IP': 1,
         'ITEM_PIPELINES': {
             'databox.github.pipelines.SubmitMcpPipeline': 800,

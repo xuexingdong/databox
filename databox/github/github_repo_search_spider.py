@@ -12,9 +12,9 @@ from databox.github.github_repo_spider import GithubRepoSpider
 class GithubRepoSearchSpider(RedisSpider):
     name = 'github_repo_search'
     redis_key = "databox:" + name
+    redis_batch_size = 1
+    max_idle_time = 60 * 5
     custom_settings = {
-        'MAX_IDLE_TIME_BEFORE_CLOSE': 60 * 5,
-        'CONCURRENT_REQUESTS': 1,
         'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
         'CONCURRENT_REQUESTS_PER_IP': 1,
         'DOWNLOAD_DELAY': 60,

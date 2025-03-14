@@ -11,10 +11,10 @@ from databox.fenbi.items import QuestionItem, MaterialItem, PaperItem, ChapterIt
 class FenbiPaperSpider(RedisSpider):
     name = 'fenbi_paper'
     redis_key = "databox:" + name
+    redis_batch_size = 2
+    max_idle_time = 60
 
     custom_settings = {
-        'MAX_IDLE_TIME_BEFORE_CLOSE': 60,
-        'CONCURRENT_REQUESTS': 2,
         'ITEM_PIPELINES': {
             'databox.fenbi.pipelines.PaperPipeline': 800,
         }

@@ -1,55 +1,54 @@
-import json
+from urllib.parse import urlparse
 
-from redis import StrictRedis
-from scrapy import Request
-from scrapy_redis import get_redis
-from scrapy_redis.spiders import RedisSpider
+from scrapy import Request, Spider
+from scrapy.crawler import Crawler
+from scrapy.exceptions import NotConfigured
+from scrapy.http import Response
+from typing_extensions import Self
 
 
-class CookieMiddleware:
-    def __init__(self, r: StrictRedis):
-        self.r = r
+class DomainCookieMiddleware:
+    COOKIES = {
+        # TODO
+        'www.instagram.com': ''
+    }
 
     @classmethod
-    def from_crawler(cls, crawler):
-        r: StrictRedis = get_redis()
-        return cls(r)
+    def from_crawler(cls, crawler: Crawler) -> Self:
+        if not crawler.settings.getbool("DOMAIN_COOKIE_ENABLED"):
+            raise NotConfigured
+        return cls()
 
-    def process_request(self, request: Request, spider: RedisSpider):
-        # 带上cookie
-        request.cookies = json.loads(self.r.lindex('cookies_pool:' + spider.name, 0))
+    def process_request(
+            self, request: Request, spider: Spider
+    ) -> Request | Response | None:
+        domain = urlparse(request.url).netloc
+        cookies = self.get_domain_cookies(domain)
+        if cookies:
+            pass
+            request.cookies.update(cookies)
 
-    def process_spider_input(self, response, spider):
-        # Called for each response that goes through the spider
-        # middleware and into the spider.
+    def get_domain_cookies(self, domain: str) -> dict:
+        # TODO 后期增加动态获取
+        """设置指定域名的cookies"""
+        cookie_str = self.COOKIES.get(domain)
+        return self.cookie_str_to_dict(cookie_str)
 
-        # Should return None or raise an exception.
-        return None
+    @staticmethod
+    def cookie_str_to_dict(cookie_str: str) -> dict:
+        """将 cookie 字符串转换为字典格式"""
+        if not cookie_str:
+            return {}
 
-    def process_spider_output(self, response, result, spider):
-        # Called with the results returned from the Spider, after
-        # it has processed the response.
+        cookies = {}
+        for item in cookie_str.split(';'):
+            item = item.strip()
+            if not item:
+                continue
+            if '=' not in item:
+                continue
 
-        # Must return an iterable of Request, dict or Item objects.
-        for i in result:
-            yield i
+            name, value = item.split('=', 1)
+            cookies[name.strip()] = value.strip()
 
-    def process_spider_exception(self, response, exception, spider):
-        # Called when a spider or process_spider_input() method
-        # (from other spider middleware) raises an exception.
-
-        # Should return either None or an iterable of Response, dict
-        # or Item objects.
-        pass
-
-    def process_start_requests(self, start_requests, spider):
-        # Called with the start requests of the spider, and works
-        # similarly to the process_spider_output() method, except
-        # that it doesn’t have a response associated.
-
-        # Must return only requests (not items).
-        for r in start_requests:
-            yield r
-
-    def spider_opened(self, spider):
-        spider.logger.info('Spider opened: %s' % spider.name)
+        return cookies

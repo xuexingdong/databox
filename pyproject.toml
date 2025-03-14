@@ -17,6 +17,8 @@ dependencies = [
     "pymongo>=4.10.1",
     "qrcode>=8.0",
     "scrapy>=2.12.0",
+    "scrapy-playwright>=0.0.43",
     "scrapy-redis>=0.9.1",
     "selenium>=4.28.1",
+    "sqlalchemy>=2.0.38",
 ]

@@ -13,10 +13,7 @@ from databox.github.github_repo_spider import GithubRepoSpider
 class PulseMcpMcpClient(RedisSpider):
     name = 'pulse_mcp_mcp_client'
     redis_key = "databox:" + name
-
-    custom_settings = {
-        'MAX_IDLE_TIME_BEFORE_CLOSE': 60
-    }
+    max_idle_time = 60
 
     def start_requests(self):
         yield Request(url='https://www.pulsemcp.com/clients', dont_filter=True)

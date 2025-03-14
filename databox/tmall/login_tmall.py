@@ -14,7 +14,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
-from databox import common_utils
+from databox import utils
 from databox.tmall.enums import TmallQrCodeScanStatus
 
 

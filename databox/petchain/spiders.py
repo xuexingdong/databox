@@ -10,6 +10,7 @@ from databox.petchain.items import PetItem
 
 class PetChainSpider(RedisSpider):
     name = 'petchain'
+    redis_batch_size = 64
 
     def start_requests(self):
         return [self.generate_request(1)]
@@ -19,7 +20,6 @@ class PetChainSpider(RedisSpider):
             'databox.petchain.pipelines.PetPipeline': 300,
         },
         'COOKIES_ENABLED':     False,
-        'CONCURRENT_REQUESTS': 64,
         'RETRY_TIMES':         10
     }
 

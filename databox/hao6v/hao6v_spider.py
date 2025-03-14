@@ -14,11 +14,11 @@ class Hao6vSpider(Spider):
     start_urls = ['http://www.hao6v.com/gvod/zx.html']
 
     custom_settings = {
-        'ITEM_PIPELINES':            {
+        'ITEM_PIPELINES': {
             'databox.hao6v.pipelines.MoviePipeline': 300,
         },
         'DOWNLOAD_FAIL_ON_DATALOSS': False,
-        'CONCURRENT_REQUESTS':       5,
+        'CONCURRENT_REQUESTS': 5,
     }
 
     def parse(self, response):

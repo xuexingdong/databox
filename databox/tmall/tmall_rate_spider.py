@@ -11,6 +11,7 @@ from databox.tmall.items import TmallRateItem
 
 class TmallRateSpider(RedisSpider):
     name = 'tmall_rate'
+    redis_batch_size = 64
 
     custom_settings = {
         'ITEM_PIPELINES':         {
@@ -19,7 +20,6 @@ class TmallRateSpider(RedisSpider):
         'DOWNLOADER_MIDDLEWARES': {
             'databox.tmall.middlewares.TmallCookiesMiddleware': 400
         },
-        'CONCURRENT_REQUESTS':    64,
         'RETRY_TIMES':            10
     }
 

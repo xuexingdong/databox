@@ -4,7 +4,7 @@ import uuid
 import requests
 from scrapy.exceptions import DropItem
 
-from databox import common_utils
+from databox import utils
 
 
 class QRCodePipeline:

@@ -4,6 +4,7 @@ import os
 ROBOTSTXT_OBEY = False
 
 COOKIES_ENABLED = True
+DOMAIN_COOKIE_ENABLED = True
 
 BOT_NAME = 'databox'
 
@@ -16,7 +17,7 @@ COMMANDS_MODULE = 'databox'
 CONCURRENT_REQUESTS_PER_IP = 16
 DOWNLOAD_DELAY = 0.25
 
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36'
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
 
 SCHEDULER_PERSIST = True
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
@@ -29,7 +30,7 @@ MONGO_URI = '127.0.0.1:27017'
 MONGO_DATABASE = 'databox'
 
 # LOG_FILE = 'logs/log.txt'
-LOG_LEVEL = logging.INFO
+LOG_LEVEL = logging.DEBUG
 
 # 驱动路径
 # CHROME_DRIVER_PATH = '/Users/xuexingdong/workspace/python/databox/chromedriver'
