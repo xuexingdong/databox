@@ -30,7 +30,7 @@ MONGO_URI = '127.0.0.1:27017'
 MONGO_DATABASE = 'databox'
 
 # LOG_FILE = 'logs/log.txt'
-LOG_LEVEL = logging.DEBUG
+LOG_LEVEL = logging.INFO
 
 # 驱动路径
 # CHROME_DRIVER_PATH = '/Users/xuexingdong/workspace/python/databox/chromedriver'

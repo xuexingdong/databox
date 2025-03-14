@@ -10,7 +10,7 @@ from scrapy_redis.spiders import RedisSpider
 from databox.github.github_repo_spider import GithubRepoSpider
 
 
-class PulseMcpMcpClient(RedisSpider):
+class PulseMcpMcpClientSpider(RedisSpider):
     name = 'pulse_mcp_mcp_client'
     redis_key = "databox:" + name
     max_idle_time = 60
@@ -37,7 +37,7 @@ class PulseMcpMcpClient(RedisSpider):
 
 def run_spiders():
     process = CrawlerProcess(get_project_settings())
-    process.crawl(PulseMcpMcpClient)
+    process.crawl(PulseMcpMcpClientSpider)
     process.start()
 
 
