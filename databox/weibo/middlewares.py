@@ -28,7 +28,7 @@ class WeiboVisitorCookieMiddleware:
             return
         if spider.server.get(WeiboVisitorCookieMiddleware.COOKIE_KEY):
             cookies = json.loads(spider.server.get(WeiboVisitorCookieMiddleware.COOKIE_KEY))
-            spider.logger.info(f'exist cookies')
+            spider.logger.info('exist cookies')
         else:
             spider.logger.info('get weibo visitor cookies')
             quoted_url = quote(request.url, safe="")

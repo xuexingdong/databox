@@ -36,6 +36,7 @@ class InsSpider(Spider):
             if one_by_two_item:
                 one_by_two_item.get('clips')
             fill_items = layout_content.get('fill_items', [])
+            print(fill_items)
             media_info = layout_content.get('medias', [{}])[0].get('media', {})
 
             # 提取用户信息
@@ -60,9 +61,7 @@ class InsSpider(Spider):
                 'like_count': media_info.get('like_count'),
                 'comment_count': media_info.get('comment_count'),
                 'caption': media_info.get('caption', {}).get('text') if media_info.get('caption') else None,
-                'is_video': media_info.get('is_video', False),
-                'feed_type': feed_type,
-                'layout_type': layout_type
+                'is_video': media_info.get('is_video', False)
             }
 
             # 获取媒体URL

@@ -70,10 +70,10 @@ class DouyuDanmuClient(DanmuClient):
         match msg_dict.get('type'):
             case TypeEnum.loginres.value:
                 login_res = LoginRes(**msg_dict)
-                print(msg_dict)
+                print(login_res)
             case TypeEnum.chatmsg.value:
-                print(msg_dict)
                 chatmsg = Chatmsg(**msg_dict)
+                print(chatmsg)
             case TypeEnum.mrkl.value:
                 pass
             case _:

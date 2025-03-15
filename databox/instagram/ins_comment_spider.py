@@ -35,6 +35,7 @@ class InsCommentSpider(Spider):
 
     def parse(self, response, **kwargs: Any) -> Any:
         res = response.json()
+        print(res)
         pass
 
     @staticmethod

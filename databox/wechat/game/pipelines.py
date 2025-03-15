@@ -17,7 +17,7 @@ class QRCodePipeline:
             if pic_url not in self.pic_set:
                 self.pic_set.add(pic_url)
                 # 二维码所指向的链接
-                qrcode_url = common_utils.decode_qrcode_img_url(pic_url)
+                qrcode_url = utils.decode_qrcode_img_url(pic_url)
                 if not qrcode_url:
                     continue
                 # 群组二维码

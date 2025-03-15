@@ -82,7 +82,7 @@ class HttpPipeline(abc.ABC):
         pass
 
     def process_item(self, item, spider):
-        r = self.client.post(self.url, json=dict(item))
+        self.client.post(self.url, json=dict(item))
 
     def close_spider(self, spider):
         self.client.close()

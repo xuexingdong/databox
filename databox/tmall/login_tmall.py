@@ -35,8 +35,8 @@ class Command(ScrapyCommand):
         while status != TmallQrCodeScanStatus.CONFIRM:
             res = requests.get('https://qrlogin.taobao.com/qrcodelogin/generateQRCode4Login.do').json()
             # qrcode_img_url是存储二维码图片的地址
-            qrcode_img_url, self.lg_token, ad_token = 'https:' + res['url'], res['lgToken'], res['adToken']
-            qrcode_url = common_utils.decode_qrcode_img_url(qrcode_img_url)
+            qrcode_img_url, self.lg_token, _ = 'https:' + res['url'], res['lgToken'], res['adToken']
+            qrcode_url = utils.decode_qrcode_img_url(qrcode_img_url)
             status = TmallQrCodeScanStatus.WAITING
             # 控制台打印二维码
             self._print_qrcode(qrcode_url)

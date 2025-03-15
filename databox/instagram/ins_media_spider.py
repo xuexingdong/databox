@@ -13,6 +13,7 @@ class InsMediaSpider(Spider):
 
     def parse(self, response, **kwargs: Any) -> Any:
         res = response.json()
+        print(res)
 
     @staticmethod
     def get_media_info_url(media_id: str | None = None):

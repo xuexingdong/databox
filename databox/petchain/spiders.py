@@ -30,25 +30,25 @@ class PetChainSpider(RedisSpider):
             return
         pets = res['data']['petsOnSale']
         for pet in pets:
-            l = PetLoader(item=PetItem())
-            l.add_value('id', pet['id'])
-            l.add_value('pet_id', pet['petId'])
-            l.add_value('birth_type', pet['birthType'])
-            l.add_value('mutation', pet['mutation'])
-            l.add_value('generation', pet['generation'])
-            l.add_value('rare_degree', pet['rareDegree'])
-            l.add_value('name', pet['desc'])
-            l.add_value('pet_type', pet['petType'])
-            l.add_value('amount', pet['amount'])
-            l.add_value('bg_color', pet['bgColor'])
-            l.add_value('pet_url', pet['petUrl'])
+            loader = PetLoader(item=PetItem())
+            loader.add_value('id', pet['id'])
+            loader.add_value('pet_id', pet['petId'])
+            loader.add_value('birth_type', pet['birthType'])
+            loader.add_value('mutation', pet['mutation'])
+            loader.add_value('generation', pet['generation'])
+            loader.add_value('rare_degree', pet['rareDegree'])
+            loader.add_value('name', pet['desc'])
+            loader.add_value('pet_type', pet['petType'])
+            loader.add_value('amount', pet['amount'])
+            loader.add_value('bg_color', pet['bgColor'])
+            loader.add_value('pet_url', pet['petUrl'])
             yield Request('https://pet-chain.baidu.com/data/pet/queryPetById', method='POST',
                           headers=response.headers,
                           body=json.dumps({
                               'petId': pet['petId'],
                               'appId': 1}),
                           meta={
-                              'item_loader': l
+                              'item_loader': loader
                           },
                           priority=1,
                           callback=self.parse_pet_detail,
@@ -64,16 +64,16 @@ class PetChainSpider(RedisSpider):
             self.logger.error('请求失败')
             return
         pet = res['data']
-        l = response.meta['item_loader']
-        l.add_value('attributes', pet['attributes'])
-        l.add_value('self_status', pet['selfStatus'])
-        l.add_value('father_id', pet['faterId'])
-        l.add_value('mother_id', pet['motherId'])
-        l.add_value('is_on_chain', pet['isOnChain'])
-        l.add_value('eth_addr', pet['ethAddr'])
-        l.add_value('head_icon', pet['headIcon'])
-        l.add_value('username', pet['userName'])
-        yield l.load_item()
+        loader = response.meta['item_loader']
+        loader.add_value('attributes', pet['attributes'])
+        loader.add_value('self_status', pet['selfStatus'])
+        loader.add_value('father_id', pet['faterId'])
+        loader.add_value('mother_id', pet['motherId'])
+        loader.add_value('is_on_chain', pet['isOnChain'])
+        loader.add_value('eth_addr', pet['ethAddr'])
+        loader.add_value('head_icon', pet['headIcon'])
+        loader.add_value('username', pet['userName'])
+        yield loader.load_item()
 
     @staticmethod
     def generate_request(page):

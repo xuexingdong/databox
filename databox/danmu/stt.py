@@ -31,15 +31,15 @@ def dumps(data) -> str:
 def loads(data) -> dict:
     if '/' in data:
         datas = filter(None, data.split('/'))  # 去除空字符串
-        l = []
+        decoded_items = []
         d = {}
         for item in datas:
             decoded_item = loads(item)  # 递归解析
             if isinstance(decoded_item, dict):
                 d.update(decoded_item)  # 更新字典
             else:
-                l.append(decoded_item)  # 加入列表
-        return d if d else l
+                decoded_items.append(decoded_item)  # 加入列表
+        return d if d else decoded_items
     elif '@=' in data:
         # 处理键值对
         k, v = data.split('@=')

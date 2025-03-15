@@ -16,6 +16,10 @@ class GithubRepoSearchMeta(BaseModel):
     updated_after: str = arrow.now().floor('day').format("YYYY-MM-DD HH:mm:ss")
     latest_updated_at: str | None = None
 
+    def reset(self):
+        self.p = 1
+        self.updated_after = self.latest_updated_at
+
 
 class GithubRepoSearchSpider(RedisSpider):
     name = 'github_repo_search'
@@ -70,7 +74,7 @@ class GithubRepoSearchSpider(RedisSpider):
             yield response.request.replace(url=url, meta=meta.model_dump())
         else:
             self.logger.info("reached time boundary, stop crawling")
-            meta.updated_after = meta.latest_updated_at
+            meta.reset()
             self.server.set(f"{self.redis_key}:meta:{meta.q}", meta.model_dump_json(exclude_none=True))
 
     @staticmethod

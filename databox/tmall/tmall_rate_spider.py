@@ -39,7 +39,7 @@ class TmallRateSpider(RedisSpider):
             # 商品详情
             yield next_request
         for rate in res['rateList']:
-            l = TmallRateLoader(item=TmallRateItem())
-            l.add_value('created_at', rate['rateDate'])
-            l.add_value('content', rate['rateContent'])
-            yield l.load_item()
+            loader = TmallRateLoader(item=TmallRateItem())
+            loader.add_value('created_at', rate['rateDate'])
+            loader.add_value('content', rate['rateContent'])
+            yield loader.load_item()
