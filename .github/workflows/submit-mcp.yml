@@ -7,7 +7,6 @@ jobs:
   run-scrapy:
     runs-on: ubuntu-latest
     services:
-      # Label used to access the service container
       redis:
         image: redis
         ports:

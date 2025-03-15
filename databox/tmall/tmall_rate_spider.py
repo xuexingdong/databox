@@ -14,13 +14,13 @@ class TmallRateSpider(RedisSpider):
     redis_batch_size = 64
 
     custom_settings = {
-        'ITEM_PIPELINES':         {
+        'ITEM_PIPELINES': {
             'databox.tmall.pipelines.TmallRatePipeline': 300,
         },
         'DOWNLOADER_MIDDLEWARES': {
             'databox.tmall.middlewares.TmallCookiesMiddleware': 400
         },
-        'RETRY_TIMES':            10
+        'RETRY_TIMES': 10
     }
 
     def make_request_from_data(self, data):

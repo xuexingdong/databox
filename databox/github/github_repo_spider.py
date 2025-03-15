@@ -4,11 +4,9 @@ from urllib.parse import urlparse
 
 import arrow
 from scrapy import Request
-from scrapy.crawler import CrawlerProcess
 from scrapy.http import Response
 from scrapy.http.request import NO_CALLBACK
 from scrapy.utils.defer import maybe_deferred_to_future
-from scrapy.utils.project import get_project_settings
 from scrapy_redis.spiders import RedisSpider
 
 from databox.github.items import Repo
@@ -17,10 +15,8 @@ from databox.github.items import Repo
 class GithubRepoSpider(RedisSpider):
     name = 'github_repo'
     redis_key = "databox:" + name
-    redis_batch_size = 1
-    max_idle_time = 60 * 5
+    redis_batch_size = 5
     custom_settings = {
-        'CONCURRENT_REQUESTS_PER_IP': 1,
         'ITEM_PIPELINES': {
             'databox.github.pipelines.SubmitMcpPipeline': 800,
         },
@@ -38,6 +34,7 @@ class GithubRepoSpider(RedisSpider):
             yield Request(url=self.url, dont_filter=True)
 
     async def parse(self, response: Response, **kwargs: Any) -> Any:
+        self.logger.info(response.url)
         embedded_data_json = response.css('react-partial[partial-name=repos-overview] script::text').get()
         if not embedded_data_json:
             self.logger.warning("empty repo, %s", response.url)
@@ -93,7 +90,6 @@ class GithubRepoSpider(RedisSpider):
             }
             repo['metadata'] = metadata
             repo['content'] = readme_content
-
             yield repo
 
     async def get_readme_content(self, repo_data):
@@ -111,7 +107,8 @@ class GithubRepoSpider(RedisSpider):
     def get_readme_url(author_name, name, branch):
         return f"https://raw.githubusercontent.com/{author_name}/{name}/refs/heads/{branch}/README.md"
 
-    def parse_readme(self, response: Response):
+    @staticmethod
+    def parse_readme(response: Response):
         if response.status == 404:
             return ''
         if '404: Not Found' == response.text:
@@ -158,14 +155,3 @@ class GithubRepoSpider(RedisSpider):
     @staticmethod
     def is_official_repo(url):
         return 'github.com/modelcontextprotocol' in url
-
-
-if __name__ == '__main__':
-    process = CrawlerProcess(get_project_settings())
-    process.crawl(GithubRepoSpider,
-                  'https://github.com/modelcontextprotocol/servers', match_repos=[
-            'https://github.com/punkpeye/awesome-mcp-servers',
-            'https://github.com/wong2/awesome-mcp-servers',
-            'https://github.com/modelcontextprotocol/servers'
-        ], match_words=['mcp', 'modelcontextprotocol'])
-    process.start()

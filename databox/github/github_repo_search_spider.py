@@ -4,80 +4,81 @@ from urllib.parse import urlparse, parse_qs
 
 import arrow
 import scrapy
+from pydantic import BaseModel
 from scrapy_redis.spiders import RedisSpider
 
 from databox.github.github_repo_spider import GithubRepoSpider
+
+
+class GithubRepoSearchMeta(BaseModel):
+    q: str
+    p: int = 1
+    updated_after: str = arrow.now().floor('day').format("YYYY-MM-DD HH:mm:ss")
+    latest_updated_at: str | None = None
 
 
 class GithubRepoSearchSpider(RedisSpider):
     name = 'github_repo_search'
     redis_key = "databox:" + name
     redis_batch_size = 1
-    max_idle_time = 60 * 5
     custom_settings = {
         'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
         'CONCURRENT_REQUESTS_PER_IP': 1,
-        'DOWNLOAD_DELAY': 60,
-        'RANDOMIZE_DOWNLOAD_DELAY': True,
-        'AUTOTHROTTLE_ENABLED': True,
+        'DOWNLOAD_DELAY': 30,
+        'RETRY_ENABLED': True,
         'RETRY_TIMES': 3,
         'RETRY_HTTP_CODES': [429],
-    }
-
-    def __init__(self, q=None, p=1, updated_after=None, *args, **kwargs):
-        """
-
-        :param q:
-        :param p:
-        :param updated_after
-        :param args:
-        :param kwargs:
-        """
-        super(GithubRepoSearchSpider, self).__init__(*args, **kwargs)
-        self.q = q
-        self.p = int(p)
-
-        if updated_after is None:
-            updated_after = arrow.now().shift(days=-1).format("YYYY-MM-DD")
-        self.updated_after = arrow.get(updated_after, "YYYY-MM-DD")
-
-    def start_requests(self):
-        url = self.gen_search_url(self.q, self.p)
-        self.logger.info(url)
-        headers = {
+        'DEFAULT_REQUEST_HEADERS': {
             'Accept': 'application/json',
             'Referer': 'https://github.com/'
         }
-        yield scrapy.Request(url, headers=headers, dont_filter=True)
+    }
+
+    def make_request_from_data(self, data):
+        meta = GithubRepoSearchMeta.model_validate_json(data)
+        self.logger.info(meta)
+        url = self.gen_search_url(meta.q, meta.p)
+        yield scrapy.Request(url,
+                             meta=meta.model_dump(),
+                             dont_filter=True
+                             )
 
     def parse(self, response, **kwargs: Any) -> Any:
         repos = response.jmespath('payload.results[].repo.repository').getall()
         if not repos:
-            self.logger.error("all finish")
+            self.logger.warning("empty page result")
             return
+        meta = GithubRepoSearchMeta.model_validate(response.meta)
+        updated_after = arrow.get(meta.updated_after)
+        should_stop = False
+        if meta.latest_updated_at is None or arrow.get(repos[0]['updated_at']) > arrow.get(meta.latest_updated_at):
+            meta.latest_updated_at = repos[0]['updated_at']
         for repo in repos:
-            if arrow.get(repo['updated_at']) < self.updated_after:
-                self.logger.info('find repo updated at %s, finish', repo['updated_at'])
-                return
+            repo_updated_time = arrow.get(repo['updated_at'])
+            if repo_updated_time < updated_after:
+                should_stop = True
+                continue
             repo_url = f'https://github.com/{repo["owner_login"]}/{repo["name"]}'
             self.server.rpush(GithubRepoSpider.redis_key, json.dumps({
                 'url': repo_url
             }))
-        p = int(response.jmespath('payload.page').get())
-        url = self.gen_search_url(self.q, p + 1)
-        self.logger.info(url)
-        # 提取查询参数部分
-        yield response.request.replace(url=url)
+        # record success page
+        self.server.set(f"{self.redis_key}:meta:{meta.q}", meta.model_dump_json(exclude_none=True))
+        if not should_stop and meta.p < 100:
+            meta.p += 1
+            url = self.gen_search_url(meta.q, meta.p)
+            yield response.request.replace(url=url, meta=meta.model_dump())
+        else:
+            self.logger.info("reached time boundary, stop crawling")
+            meta.updated_after = meta.latest_updated_at
+            self.server.set(f"{self.redis_key}:meta:{meta.q}", meta.model_dump_json(exclude_none=True))
 
     @staticmethod
-    def get_page_number(url):
-        # 解析 URL
+    def get_page_number(url: str):
         parsed_url = urlparse(url)
-        # 解析查询参数为字典
         query_params = parse_qs(parsed_url.query)
-        # 获取当前的 `p` 参数值，如果没有则默认为 1
         return int(query_params.get('p', [1])[0])
 
     @staticmethod
-    def gen_search_url(q, p=1):
+    def gen_search_url(q: str, p: int):
         return f"https://github.com/search?q={q}&type=repositories&s=updated&o=desc&p={p}"

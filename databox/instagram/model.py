@@ -1,8 +1,20 @@
+from enum import Enum
 from typing import Any
 
 from pydantic import BaseModel, Field
 
 from databox.instagram import constants
+
+
+# Instagram 媒体产品类型枚举
+class ProductType(Enum):
+    FEED = "feed"  # 普通帖子
+    IGTV = "igtv"  # IGTV 视频
+    CLIPS = "clips"  # Reels 短视频
+    CAROUSEL_CONTAINER = "carousel_container"  # 轮播图集
+    GUIDE = "guide"  # 指南
+    COLLECTION = "collection"  # 收藏集
+    STORY = "story"  # 故事
 
 
 class BaseInstagramQuery(BaseModel):

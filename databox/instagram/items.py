@@ -17,3 +17,20 @@ class InsUserItem(Item):
     is_business = Field()
     fbid = Field()
     pk = Field()
+
+
+class InsMediaItem(Item):
+    user_id = Field()
+    username = Field()
+    code = Field()
+    pk = Field()
+    id = Field()
+    taken_at = Field()
+    caption = Field()
+    caption_is_edited = Field()
+    media_url = Field()
+    comment_count = Field()
+    like_count = Field()
+    product_type = Field()
+    created_at = Field()
+    updated_at = Field()

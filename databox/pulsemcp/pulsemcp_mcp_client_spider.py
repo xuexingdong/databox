@@ -2,9 +2,7 @@ import json
 from typing import Any
 
 from scrapy import Request
-from scrapy.crawler import CrawlerProcess
 from scrapy.http import Response
-from scrapy.utils.project import get_project_settings
 from scrapy_redis.spiders import RedisSpider
 
 from databox.github.github_repo_spider import GithubRepoSpider
@@ -13,9 +11,8 @@ from databox.github.github_repo_spider import GithubRepoSpider
 class PulseMcpMcpClientSpider(RedisSpider):
     name = 'pulse_mcp_mcp_client'
     redis_key = "databox:" + name
-    max_idle_time = 60
 
-    def start_requests(self):
+    def make_request_from_data(self, data):
         yield Request(url='https://www.pulsemcp.com/clients', dont_filter=True)
 
     def parse(self, response: Response, **kwargs: Any) -> Any:
@@ -33,13 +30,3 @@ class PulseMcpMcpClientSpider(RedisSpider):
                 'type': 'client'
             }
         }))
-
-
-def run_spiders():
-    process = CrawlerProcess(get_project_settings())
-    process.crawl(PulseMcpMcpClientSpider)
-    process.start()
-
-
-if __name__ == "__main__":
-    run_spiders()

@@ -77,6 +77,7 @@ class InsProfileSpider(RedisSpider):
         yield item
 
         self.server.rpush(InsMediaListSpider.redis_key, json.dumps({
+            'user_id': item['id'],
             'username': item['username']
         }))
 
