@@ -12,7 +12,7 @@ WORKDIR /app
 RUN mkdir -p logs
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ && \
+RUN pip install --no-cache-dir -r requirements.txt && \
     rm -rf /root/.cache/pip/*
 
 COPY --chown=appuser:appuser . .
