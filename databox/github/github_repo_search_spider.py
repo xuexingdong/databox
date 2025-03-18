@@ -13,7 +13,7 @@ from databox.github.github_repo_spider import GithubRepoSpider
 class GithubRepoSearchMeta(BaseModel):
     q: str
     p: int = 1
-    updated_after: str = arrow.now().floor('day').format("YYYY-MM-DD HH:mm:ss")
+    updated_after: str = arrow.now().shift(days=-1).floor('day').format("YYYY-MM-DD HH:mm:ss")
     latest_updated_at: str | None = None
 
     def reset(self):
@@ -28,10 +28,7 @@ class GithubRepoSearchSpider(RedisSpider):
     custom_settings = {
         'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
         'CONCURRENT_REQUESTS_PER_IP': 1,
-        'DOWNLOAD_DELAY': 30,
-        'RETRY_ENABLED': True,
-        'RETRY_TIMES': 3,
-        'RETRY_HTTP_CODES': [429],
+        'DOWNLOAD_DELAY': 45,
         'DEFAULT_REQUEST_HEADERS': {
             'Accept': 'application/json',
             'Referer': 'https://github.com/'
@@ -50,7 +47,7 @@ class GithubRepoSearchSpider(RedisSpider):
     def parse(self, response, **kwargs: Any) -> Any:
         repos = response.jmespath('payload.results[].repo.repository').getall()
         if not repos:
-            self.logger.warning("empty page result")
+            self.logger.error("empty page result")
             return
         meta = GithubRepoSearchMeta.model_validate(response.meta)
         updated_after = arrow.get(meta.updated_after)
@@ -64,14 +61,18 @@ class GithubRepoSearchSpider(RedisSpider):
                 continue
             repo_url = f'https://github.com/{repo["owner_login"]}/{repo["name"]}'
             self.server.rpush(GithubRepoSpider.redis_key, json.dumps({
-                'url': repo_url
+                'url': repo_url,
+                'meta': {
+                    'dont_filter': True,
+                }
             }))
-        # record success page
-        self.server.set(f"{self.redis_key}:meta:{meta.q}", meta.model_dump_json(exclude_none=True))
         if not should_stop and meta.p < 100:
             meta.p += 1
-            url = self.gen_search_url(meta.q, meta.p)
-            yield response.request.replace(url=url, meta=meta.model_dump())
+            self.server.set(f"{self.redis_key}:meta:{meta.q}", meta.model_dump_json(exclude_none=True))
+            self.server.rpush(
+                self.redis_key,
+                meta.model_dump_json(exclude_none=True)
+            )
         else:
             self.logger.info("reached time boundary, stop crawling")
             meta.reset()

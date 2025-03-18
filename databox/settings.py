@@ -17,6 +17,8 @@ COMMANDS_MODULE = 'databox'
 CONCURRENT_REQUESTS_PER_IP = 16
 DOWNLOAD_DELAY = 0.25
 
+TWISTED_REACTOR = 'twisted.internet.asyncioreactor.AsyncioSelectorReactor'
+
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
 
 SCHEDULER_PERSIST = True
@@ -40,5 +42,5 @@ PLAYWRIGHT_LAUNCH_OPTIONS = {
     "headless": False,
     "timeout": 30 * 1000
 }
-REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+REDIS_URL = os.getenv('REDIS_URL', 'redis://redis:6379/0')
 X_API = os.getenv('X_API', 'http://localhost:8081')

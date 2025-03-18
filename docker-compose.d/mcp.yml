@@ -1,0 +1,22 @@
+services:
+  mcp-crawler:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: mcp:latest
+    command: python -m databox.github.mcp_crawler
+    networks:
+      - traefik
+
+  mcp-submit-task:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: mcp-submit-task:latest
+    command: python -m databox.github.submit_mcp_crawl_task
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true

@@ -14,7 +14,6 @@ class TiktokVideoPlayWrightSpider(RedisSpider):
     name = 'tiktok:playwright'
     redis_key = name
     custom_settings = {
-        "TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor",
         "DOWNLOAD_HANDLERS": {
             "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
             "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",

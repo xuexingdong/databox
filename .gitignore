@@ -9,6 +9,7 @@ wheels/
 # Virtual environments
 .venv
 
+.ruff_cache
 .idea
 .DS_Store
 .secrets

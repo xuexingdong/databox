@@ -47,7 +47,12 @@ class GithubRepoSpider(RedisSpider):
                 all_links = markdown_body.css("a::attr(href)").getall()
                 for link in all_links:
                     if self.is_github_repo(link) and any(word in link for word in self.match_words):
-                        yield Request(link, dont_filter=True)
+                        self.server.rpush(self.redis_key, json.dumps({
+                            'url': link,
+                            'meta': {
+                                'dont_filter': True,
+                            }
+                        }))
         else:
             embedded_data = json.loads(embedded_data_json)
             repo_data = embedded_data['props']['initialPayload']['repo']

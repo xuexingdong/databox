@@ -9,7 +9,7 @@ from databox.pulsemcp.pulsemcp_mcp_client_spider import PulseMcpMcpClientSpider
 
 
 class McpScheduler:
-    def __init__(self, redis_url='redis://localhost:6379'):
+    def __init__(self, redis_url='redis://redis:6379/0'):
         self.r = StrictRedis.from_url(redis_url, decode_responses=True)
         self.scheduler = AsyncIOScheduler()
 
@@ -28,13 +28,13 @@ class McpScheduler:
         await self.r.rpush(PulseMcpMcpClientSpider.redis_key, '')
 
     async def run(self, query: str):
-        """启动调度器"""
-        # self.scheduler.add_job(
-        #     self.push_mcp_client_task,
-        #     'interval',
-        #     hours=2,
-        #     next_run_time=datetime.now(),
-        # )
+        self.scheduler.add_job(
+            self.push_mcp_client_task,
+            'cron',
+            hour=1,
+            minute=0,
+            next_run_time=datetime.now(),
+        )
         self.scheduler.add_job(
             self.push_mcp_server_task,
             'interval',
@@ -42,17 +42,14 @@ class McpScheduler:
             next_run_time=datetime.now(),
             args=[query]
         )
-        try:
-            self.scheduler.start()
-            # 保持程序运行
-            await asyncio.get_event_loop().create_future()
-        except (KeyboardInterrupt, SystemExit):
-            self.scheduler.shutdown()
-        except Exception as e:
-            print(f"调度器错误: {e}")
-            self.scheduler.shutdown()
+        self.scheduler.start()
+        while True:
+            await asyncio.sleep(1)
 
 
 if __name__ == '__main__':
     scheduler = McpScheduler()
-    asyncio.run(scheduler.run('mcp-server'))
+    try:
+        asyncio.run(scheduler.run('mcp-server'))
+    except (KeyboardInterrupt, SystemExit):
+        pass

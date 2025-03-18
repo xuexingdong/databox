@@ -1,15 +1,11 @@
 from typing import Any
 
-from scrapy import Spider
+from scrapy_redis.spiders import RedisSpider
 
 
-class InsMediaSpider(Spider):
+class InsMediaSpider(RedisSpider):
     name = 'ins_media_spider'
-    redis_key = "databox:" + name
-
-    def __init__(self, name: str | None = None, media_id: str | None = None, **kwargs: Any):
-        super().__init__(name, **kwargs)
-        self.media_id = media_id
+    redis_key = "databox:ins:" + name
 
     def parse(self, response, **kwargs: Any) -> Any:
         res = response.json()

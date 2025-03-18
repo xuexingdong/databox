@@ -18,4 +18,3 @@ RUN pip install --no-cache-dir -r requirements.txt -i https://mirrors.aliyun.com
 COPY --chown=appuser:appuser . .
 
 USER appuser
-CMD ["scrapy", "crawl", "idiom", "-s", "LOG_LEVEL=ERROR"]

@@ -17,6 +17,11 @@ class ProductType(Enum):
     STORY = "story"  # 故事
 
 
+class CommentSortOrder(Enum):
+    POPULAR = "popular"  # 按热度排序
+    RECENT = "recent"  # 按时间排序
+
+
 class BaseInstagramQuery(BaseModel):
     variables: BaseModel
 
@@ -48,8 +53,10 @@ class PolarisProfilePostsQueryVariables(BaseModel):
     username: str
     data: PostsQueryData = PostsQueryData()
     # pydantic can't serialize with variables start with underscore
-    relay_login: bool = Field(True, serialization_alias="__relay_internal__pv__PolarisIsLoggedInrelayprovider")
-    relay_share: bool = Field(True, serialization_alias="__relay_internal__pv__PolarisShareSheetV3relayprovider")
+    relay_login: bool = Field(default=True,
+                              serialization_alias="__relay_internal__pv__PolarisIsLoggedInrelayprovider")
+    relay_share: bool = Field(default=True,
+                              serialization_alias="__relay_internal__pv__PolarisShareSheetV3relayprovider")
 
 
 class PolarisProfilePostsQuery(BaseInstagramQuery):
@@ -65,3 +72,9 @@ class PolarisProfilePostsTabContentQuery_connectionVariables(PolarisProfilePosts
 
 class PolarisProfilePostsTabContentQuery_connection(BaseInstagramQuery):
     variables: PolarisProfilePostsTabContentQuery_connectionVariables
+
+
+class CommentPayload(BaseModel):
+    can_support_threading: bool = True
+    min_id: str = ''
+    sort_order: CommentSortOrder = CommentSortOrder.POPULAR

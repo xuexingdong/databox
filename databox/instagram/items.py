@@ -1,36 +1,38 @@
+from pydantic import BaseModel
 from scrapy import Item, Field
 
-
-class InsUserItem(Item):
-    id = Field()
-    username = Field()
-    full_name = Field()
-    biography = Field()
-    media_count = Field()
-    follower_count = Field()
-    following_count = Field()
-    is_private = Field()
-    is_verified = Field()
-    profile_pic_url = Field()
-    hd_profile_pic_url = Field()
-    category = Field()
-    is_business = Field()
-    fbid = Field()
-    pk = Field()
+from databox.instagram.model import ProductType
 
 
-class InsMediaItem(Item):
-    user_id = Field()
-    username = Field()
-    code = Field()
-    pk = Field()
-    id = Field()
-    taken_at = Field()
-    caption = Field()
-    caption_is_edited = Field()
-    media_url = Field()
-    comment_count = Field()
-    like_count = Field()
-    product_type = Field()
-    created_at = Field()
-    updated_at = Field()
+class InsUserItem(BaseModel):
+    id: str
+    username: str
+    full_name: str = ''
+    biography: str = ''
+    media_count: int = 0
+    follower_count: int = 0
+    following_count: int = 0
+    is_private: bool = False
+    is_verified: bool = False
+    profile_pic_url: str = ''
+    hd_profile_pic_url: str = ''
+    category: str = ''
+    is_business: bool = False
+    fbid_v2: str = ''
+    pk: str
+
+
+class InsMediaItem(BaseModel):
+    user_id: str
+    username: str
+    code: str
+    pk: str
+    id: str
+    taken_at: int
+    image_url: str | None = None
+    video_url: str | None = None
+    caption: str | None = None
+    caption_is_edited: bool = False
+    comment_count: int = 0
+    like_count: int = 0
+    product_type: ProductType
