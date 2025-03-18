@@ -5,8 +5,6 @@ services:
     ports:
       - "6379:6379"
     command: redis-server
-    networks:
-      - databox-network
 
   mcp-crawler:
     build:
@@ -14,8 +12,6 @@ services:
       dockerfile: Dockerfile
     image: mcp:latest
     command: python -m databox.github.mcp_crawler
-    networks:
-      - databox-network
 
   mcp-submit-task:
     build:
@@ -23,9 +19,3 @@ services:
       dockerfile: Dockerfile
     image: mcp-submit-task:latest
     command: python -m databox.github.submit_mcp_crawl_task
-    networks:
-      - databox-network
-
-networks:
-  databox-network:
-    external: true
