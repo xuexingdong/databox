@@ -1,27 +1,31 @@
 services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: redis-server
+    networks:
+      - databox-network
+
   mcp-crawler:
     build:
       context: ..
       dockerfile: Dockerfile
     image: mcp:latest
-    environment:
-      DOCKER_NETWORK: ${DOCKER_NETWORK}
     command: python -m databox.github.mcp_crawler
     networks:
-      - traefik
+      - databox-network
 
   mcp-submit-task:
     build:
       context: ..
       dockerfile: Dockerfile
     image: mcp-submit-task:latest
-    environment:
-      DOCKER_NETWORK: ${DOCKER_NETWORK}
     command: python -m databox.github.submit_mcp_crawl_task
     networks:
-      - traefik
+      - databox-network
 
 networks:
-  traefik: # 本地引用名，非实际网络名称
-    name: ${DOCKER_NETWORK} # 实际网络名称
+  databox-network:
     external: true
