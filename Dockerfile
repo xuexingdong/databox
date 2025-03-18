@@ -5,11 +5,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     TZ=Asia/Shanghai
 
 RUN groupadd -r appuser && \
-    useradd -r -g appuser appuser
+    useradd -r -g appuser -m appuser && \
+    chown -R appuser:appuser /home/appuser
 
 WORKDIR /app
-
-RUN mkdir -p logs
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt && \
