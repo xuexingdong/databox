@@ -4,6 +4,8 @@ services:
       context: ..
       dockerfile: Dockerfile
     image: mcp:latest
+    environment:
+      DOCKER_NETWORK: ${DOCKER_NETWORK}
     command: python -m databox.github.mcp_crawler
     networks:
       - traefik
@@ -13,10 +15,13 @@ services:
       context: ..
       dockerfile: Dockerfile
     image: mcp-submit-task:latest
+    environment:
+      DOCKER_NETWORK: ${DOCKER_NETWORK}
     command: python -m databox.github.submit_mcp_crawl_task
     networks:
       - traefik
 
 networks:
-  traefik:
+  traefik: # 本地引用名，非实际网络名称
+    name: ${DOCKER_NETWORK} # 实际网络名称
     external: true
