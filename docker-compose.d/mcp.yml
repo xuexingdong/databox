@@ -4,7 +4,10 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
-    command: redis-server
+    command: redis-server --appendonly yes
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_REPLICATION_MODE=master
 
   mcp-crawler:
     build:
