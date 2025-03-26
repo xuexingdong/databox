@@ -16,7 +16,9 @@ services:
       dockerfile: Dockerfile
     image: mcp:latest
     restart: unless-stopped
-    command: python -m databox.github.mcp_crawler
+    command: python -m databox.github.mcp_crawler’
+    depends_on:
+      - redis
 
   mcp-submit-task:
     build:
@@ -25,3 +27,5 @@ services:
     image: mcp-submit-task:latest
     restart: unless-stopped
     command: python -m databox.github.submit_mcp_crawl_task
+    depends_on:
+      - redis
