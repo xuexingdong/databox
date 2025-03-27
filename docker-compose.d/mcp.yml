@@ -6,9 +6,6 @@ services:
       - "6379:6379"
     restart: unless-stopped
     command: redis-server --appendonly yes
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - REDIS_REPLICATION_MODE=master
 
   mcp-crawler:
     build:
