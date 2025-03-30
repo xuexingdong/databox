@@ -4,18 +4,25 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
-    command: redis-server --replica-read-only no
+    restart: unless-stopped
+    command: redis-server --save "" --appendonly no
 
   mcp-crawler:
     build:
       context: ..
       dockerfile: Dockerfile
     image: mcp:latest
+    restart: unless-stopped
     command: python -m databox.github.mcp_crawler
+    depends_on:
+      - redis
 
   mcp-submit-task:
     build:
       context: ..
       dockerfile: Dockerfile
     image: mcp-submit-task:latest
+    restart: unless-stopped
     command: python -m databox.github.submit_mcp_crawl_task
+    depends_on:
+      - redis
