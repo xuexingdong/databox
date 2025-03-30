@@ -4,7 +4,7 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
-    command: redis-server
+    command: redis-server --replica-read-only no
 
   mcp-crawler:
     build:
