@@ -7,13 +7,13 @@ wheels/
 *.egg-info
 
 # Virtual environments
-.venv
+.venv/
 
 .ruff_cache
-.idea
+.idea/
 .DS_Store
 .secrets
 .env
-logs
+logs/
 /*.db
 main.py
