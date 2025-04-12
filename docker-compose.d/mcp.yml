@@ -5,7 +5,7 @@ services:
     ports:
       - "6379:6379"
     restart: unless-stopped
-    command: redis-server --save "" --appendonly no
+    command: redis-server --save "" --appendonly no --protected-mode no --maxmemory-policy allkeys-lru --maxmemory 1gb --daemonize no
 
   mcp-crawler:
     build:
