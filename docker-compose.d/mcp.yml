@@ -6,9 +6,8 @@ services:
       - "6379:6379"
     restart: unless-stopped
     volumes:
-      - /dev/null:/data/dump.rdb
-      - /dev/null:/data/appendonly.aof
-    command: redis-server --save "" --appendonly no --protected-mode no --maxmemory-policy allkeys-lru --maxmemory 5gb
+      - /data:/data
+    command: redis-server --save "" --appendonly no --protected-mode no --maxmemory-policy allkeys-lru --maxmemory 5gb --dir /data
 
   mcp-crawler:
     build:
