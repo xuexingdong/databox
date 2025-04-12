@@ -5,6 +5,9 @@ services:
     ports:
       - "6379:6379"
     restart: unless-stopped
+    volumes:
+      - /dev/null:/data/dump.rdb
+      - /dev/null:/data/appendonly.aof
     command: redis-server --save "" --appendonly no --protected-mode no --maxmemory-policy allkeys-lru --maxmemory 5gb
 
   mcp-crawler:
