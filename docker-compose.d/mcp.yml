@@ -5,14 +5,13 @@ services:
     ports:
       - "6379:6379"
     restart: unless-stopped
-    command: redis-server --save "" --appendonly no --protected-mode no --maxmemory-policy allkeys-lru --maxmemory 1gb --daemonize no
+    command: redis-server --save "" --appendonly no --protected-mode no --maxmemory-policy allkeys-lru --maxmemory 5gb
 
   mcp-crawler:
     build:
       context: ..
       dockerfile: Dockerfile
     image: mcp:latest
-    restart: unless-stopped
     command: python -m databox.github.mcp_crawler
     depends_on:
       - redis
@@ -22,7 +21,6 @@ services:
       context: ..
       dockerfile: Dockerfile
     image: mcp-submit-task:latest
-    restart: unless-stopped
     command: python -m databox.github.submit_mcp_crawl_task
     depends_on:
       - redis
