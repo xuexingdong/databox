@@ -17,6 +17,9 @@ class GithubRepoSpider(RedisSpider):
     redis_key = "databox:" + name
     redis_batch_size = 5
     custom_settings = {
+        'EXTENSIONS': {
+            'scrapy.extensions.logstats.LogStats': None,
+        },
         'ITEM_PIPELINES': {
             'databox.github.pipelines.SubmitMcpPipeline': 800,
         },
@@ -34,12 +37,10 @@ class GithubRepoSpider(RedisSpider):
             yield Request(url=self.url, dont_filter=True)
 
     async def parse(self, response: Response, **kwargs: Any) -> Any:
-        self.logger.info(response.url)
         embedded_data_json = response.css('react-partial[partial-name=repos-overview] script::text').get()
         if not embedded_data_json:
             self.logger.warning("empty repo, %s", response.url)
             return
-        # TODO 空repo去除
         markdown_body = response.css('article.markdown-body')
         # 需要匹配的repo，不需要收录
         if self.match_repos and response.url in self.match_repos:

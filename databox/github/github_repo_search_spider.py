@@ -26,6 +26,9 @@ class GithubRepoSearchSpider(RedisSpider):
     redis_key = "databox:" + name
     redis_batch_size = 1
     custom_settings = {
+        'EXTENSIONS': {
+            'scrapy.extensions.logstats.LogStats': None,
+        },
         'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
         'CONCURRENT_REQUESTS_PER_IP': 1,
         'DOWNLOAD_DELAY': 45,
