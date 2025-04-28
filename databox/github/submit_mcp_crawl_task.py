@@ -9,8 +9,11 @@ from databox.pulsemcp.pulsemcp_mcp_client_spider import PulseMcpMcpClientSpider
 
 
 class McpScheduler:
-    def __init__(self, redis_url='redis://redis:6379/0'):
-        self.r = StrictRedis.from_url(redis_url, decode_responses=True)
+    def __init__(self, redis_url=None):
+        self.r = StrictRedis.from_url(
+            redis_url or os.getenv('REDIS_URL', 'redis://redis:6379/0'),
+            decode_responses=True
+        )
         self.scheduler = AsyncIOScheduler()
 
     async def push_mcp_server_task(self, query):
