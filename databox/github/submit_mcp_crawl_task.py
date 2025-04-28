@@ -14,6 +14,7 @@ class McpScheduler:
             redis_url or os.getenv('REDIS_URL', 'redis://redis:6379/0'),
             decode_responses=True
         )
+        print(f"Redis URL: {self.r.connection_pool.connection_kwargs}")
         self.scheduler = AsyncIOScheduler()
 
     async def push_mcp_server_task(self, query):
