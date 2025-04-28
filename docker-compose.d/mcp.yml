@@ -6,11 +6,14 @@ services:
       - "6379:6379"
     volumes:
       - /data:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     restart: unless-stopped
     command: > 
       redis-server
       --save ""
       --appendonly yes
+      --requirepass ${REDIS_PASSWORD}
       --protected-mode yes
       --replicaof no one
       --maxmemory 5gb
