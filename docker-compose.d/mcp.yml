@@ -11,9 +11,9 @@ services:
       redis-server
       --save ""
       --appendonly no
-      --protected-mode no
+      --protected-mode yes
       --replicaof no one
-      --maxmemory 3gb
+      --maxmemory 5gb
       --maxmemory-policy allkeys-lru
       --dir /data
 
