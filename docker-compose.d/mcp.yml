@@ -4,11 +4,13 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+    volumes:
+      - /data:/data
     restart: unless-stopped
     command: > 
       redis-server
       --save ""
-      --appendonly no
+      --appendonly yes
       --protected-mode yes
       --replicaof no one
       --maxmemory 5gb
