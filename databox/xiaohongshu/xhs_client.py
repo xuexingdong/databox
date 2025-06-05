@@ -8,6 +8,7 @@ from urllib.parse import urlparse, urlencode
 
 import httpx
 from playwright.sync_api import sync_playwright
+from playwright_stealth import stealth_sync
 
 from databox.xiaohongshu.constants import PlatformCode, CodeStatus
 
@@ -65,16 +66,15 @@ class XhsClient:
                 request.headers['cookie'] = cookie_str
             request.headers.update(self.get_xhs_headers(request.url, data))
 
-        stealth_js_path = 'stealth.min.js'
         encrypt_js_path = 'encrypt.js'
         args = ['--disable-web-security', '--start-maximized']
         playwright = sync_playwright().start()
         browser = playwright.chromium.launch(headless=False, args=args)
         user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.366'
         context = browser.new_context(no_viewport=True, user_agent=user_agent)
-        context.add_init_script(path=stealth_js_path)
         context.add_init_script(path=encrypt_js_path)
         page = context.new_page()
+        stealth_sync(page)
         page.goto('https://www.xiaohongshu.com')
         vendor_dynamic_js_url = 'https://' + re.search(XhsClient.VENDOR_DYNAMIC_REGEX, page.content()).group(1)
         page.goto(vendor_dynamic_js_url)

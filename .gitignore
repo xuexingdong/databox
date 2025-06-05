@@ -5,3 +5,5 @@ main.py
 data
 __pycache__
 userdata
+/*.db
+.DS_Store
