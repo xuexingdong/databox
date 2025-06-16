@@ -1,9 +1,9 @@
 services:
-  redis:
+  databox-redis:
     image: redis:7.4.3-alpine
-    container_name: redis
+    container_name: databox-redis
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - /data:/data
     environment:
@@ -26,7 +26,7 @@ services:
     image: mcp:latest
     command: python -m databox.github.mcp_crawler
     depends_on:
-      - redis
+      - databox-redis
     environment:
       - REDIS_URL=${REDIS_URL}
 
@@ -37,6 +37,6 @@ services:
     image: mcp-submit-task:latest
     command: python -m databox.github.submit_mcp_crawl_task
     depends_on:
-      - redis
+      - databox-redis
     environment:
       - REDIS_URL=${REDIS_URL}
