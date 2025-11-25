@@ -376,7 +376,7 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "mitmproxy", specifier = ">=11.1.3" },
     { name = "peewee", specifier = ">=3.17.9" },
-    { name = "playwright-stealth", specifier = ">=1.0.6" },
+    { name = "playwright-stealth", specifier = ">=2.0.0" },
     { name = "psycopg2", specifier = ">=2.9.10" },
     { name = "pycryptodome", specifier = ">=3.22.0" },
     { name = "pydantic", specifier = ">=2.10.6" },
@@ -984,14 +984,14 @@ wheels = [
 
 [[package]]
 name = "playwright-stealth"
-version = "1.0.6"
+version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "playwright" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/dc/4e88b517e4c9cfb63f1b0b67d59adddcef2dc2fe0883b90e07119d15895a/playwright-stealth-1.0.6.tar.gz", hash = "sha256:b504d951d00fac755c7d13665a29611d415180510bd7d23f14ebc89439ba2043", size = 19984 }
+sdist = { url = "https://files.pythonhosted.org/packages/b0/50/e008cc2d9f01e351d69f0bb0f394882c517611eec0ee3d5f8dd8535ce719/playwright_stealth-2.0.0.tar.gz", hash = "sha256:4f44d416d4226689895a4d1cfb40e8d137216c0c9710ea8f84bae2dbf1186fc5", size = 25723 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/34/10/60981cb8d8e22487061b98a0803313c4fb519cc95ab1421516304a0cfcd0/playwright_stealth-1.0.6-py3-none-any.whl", hash = "sha256:b1b2bcf58eb6859aa53d42c49b91c4e27b74a6d13fc3d0c85eea513dd55efda3", size = 28288 },
+    { url = "https://files.pythonhosted.org/packages/b9/4e/c37ac19cea166a97de3a9690ad5ba340b3f4f4fcd5bf8237cedb2c2c7076/playwright_stealth-2.0.0-py3-none-any.whl", hash = "sha256:9eb3af1fd21619aac9fdd13a4a08141ed67159ac6310a94f7d2f758ba0cbe179", size = 32466 },
 ]
 
 [[package]]
